@@ -9,15 +9,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,25 +25,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         final MangaListAdapter adapter = new MangaListAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // GridLayoutManager(this, 2)  // LinearLayoutManager(this)
         mangaViewModel = ViewModelProviders.of(this).get(MangaViewModel.class);
-        mangaViewModel.getAllMangas().observe(this, new Observer<List<Manga>>() {
-            @Override
-            public void onChanged(List<Manga> mangas) {
-                adapter.setMangas(mangas);
-            }
-        });
+        mangaViewModel.getAllMangas().observe(this, mangas -> adapter.setMangas(mangas));
     }
 
     @Override

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "mangas_table")
-public class Manga {
+public class Manga implements Comparable<Manga>{
     @PrimaryKey
     @NonNull
     @SerializedName("i")
@@ -29,7 +29,7 @@ public class Manga {
     private long hits;
     public Manga(@NonNull String id, @NonNull String image, @NonNull String title, @NonNull String[] category, long lastChapterDate, long hits) {
         this.id = id;
-        this.image = image;
+        this.image = "https://cdn.mangaeden.com/mangasimg/" + image;
         this.title = title;
         this.category = category;
         this.lastChapterDate = lastChapterDate;
@@ -62,5 +62,10 @@ public class Manga {
 
     public long getHits() {
         return hits;
+    }
+
+    @Override
+    public int compareTo(Manga o) {
+        return Long.compare(o.hits, this.hits);
     }
 }

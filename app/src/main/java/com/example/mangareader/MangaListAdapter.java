@@ -1,6 +1,7 @@
 package com.example.mangareader;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,13 @@ import java.util.List;
 public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MangaViewHolder>{
     private final LayoutInflater mInflater;
     private List<Manga> mangas; // Cached copy of words
-
+    private static final String TAG = "debugging";
     public MangaListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
     public void  setMangas(List<Manga> mangas) {
         //Log.i("debugging", "setMangas: new size: " +  mangas.size());
         this.mangas = mangas;
+        //for(Manga x : mangas)
+          //  Log.i("debugging", "setMangas: date -> " + x.getLastChapterDate());
         notifyDataSetChanged();
     }
     @NonNull
@@ -35,15 +38,16 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     public void onBindViewHolder(@NonNull MangaViewHolder holder, int position) {
         if(mangas != null) {
             Manga current = mangas.get(position);
-            holder.mangaTitle.setText(current.getTitle());
-            String baseImageUrl = "https://cdn.mangaeden.com/mangasimg/";
+            String text = current.getTitle();
+            if (text.length() >= 12) {
+                text = text.substring(0, 11) + "...";
+            }
+            //holder.mangaTitle.setText(text);
             Picasso.get()
-                    .load(baseImageUrl + current.getImage())
+                    .load(current.getImage())
                     .placeholder(R.drawable.ic_manga_placeholder)
-                    .resize(250, 250)
+                    .fit()
                     .into(holder.mangaImageView);
-        } else {
-            holder.mangaTitle.setText("No Title");
         }
     }
     @Override
@@ -52,11 +56,11 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     }
 
     public class MangaViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mangaTitle;
+        //private final TextView mangaTitle;
         private final ImageView mangaImageView;
         public MangaViewHolder(@NonNull View itemView) {
             super(itemView);
-            mangaTitle = itemView.findViewById(R.id.textView);
+            //mangaTitle = itemView.findViewById(R.id.textView);
             mangaImageView = itemView.findViewById(R.id.mangaImage);
         }
     }

@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/mangaImage"
-        android:layout_width="250px"
-        android:layout_height="250px"
-        android:src="@drawable/ic_launcher_background"
-        android:layout_marginBottom="20dp"></ImageView>
-
-    <TextView
-        android:id="@+id/textView"
-        style="@style/text_view_style"
-        android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.MaterialComponents.CardView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:gravity="center"
+        android:layout_marginLeft="@dimen/mtrl_card_spacing"
+        android:layout_marginTop="@dimen/mtrl_card_spacing"
+        android:layout_marginRight="@dimen/mtrl_card_spacing"
         android:layout_marginBottom="10dp"
-        tools:text="placeholder text" />
+        android:minHeight="200dp"
+        android:layout_gravity="center">
+            <!--
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="5dp"
+                tools:text="placeholder text" />
+                -->
+
+        <!-- Card contents. -->
+        <ImageView
+            android:id="@+id/mangaImage"
+            android:layout_width="170dp"
+            android:layout_height="245dp"
+            android:src="@drawable/ic_launcher_background"
+            android:layout_gravity="center"
+            />
+        <!-- height = width * (350/221) -->
+
+    </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>
