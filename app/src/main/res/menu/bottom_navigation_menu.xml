@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/decouvrir"
+    <item android:id="@+id/nav_decouvrir"
         android:icon="@drawable/ic_compass"
         android:title="All"
         app:showAsAction="ifRoom"
          />
-    <item android:id="@+id/recent"
+    <item android:id="@+id/nav_recent"
         android:icon="@drawable/ic_access_time_black_24dp"
-        android:title="Last Chapter"
+        android:title="Recent Chapter"
         app:showAsAction="ifRoom"
         />
-    <item android:id="@+id/telechargement"
-        android:icon="@drawable/ic_arrow_downward_black_24dp"
-        android:title="Downloads"
+    <item android:id="@+id/nav_favorite"
+        android:icon="@drawable/ic_favorite_black_24dp"
+        android:title="Favorite"
         app:showAsAction="ifRoom"
         />
 

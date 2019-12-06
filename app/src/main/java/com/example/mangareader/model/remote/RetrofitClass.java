@@ -1,4 +1,4 @@
-package com.example.mangareader.remote;
+package com.example.mangareader.model.remote;
 
 import retrofit2.Retrofit;
 

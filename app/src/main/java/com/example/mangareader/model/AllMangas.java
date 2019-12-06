@@ -1,20 +1,22 @@
-package com.example.mangareader.remote;
+package com.example.mangareader.model;
 
-import com.example.mangareader.Manga;
+import com.example.mangareader.model.Manga;
 
-public class MangaResponse {
+import java.util.List;
+
+public class AllMangas {
     private int end;
-    private Manga[] manga;
+    private List<Manga> manga;
     private int page;
     private int start;
-    private int total;
+    //private int total;
 
-    public MangaResponse(int end, Manga[] manga, int page, int start, int total) {
+    public AllMangas(int end, List<Manga> manga, int page, int start){//, int total) {
         this.end = end;
         this.manga = manga;
         this.page = page;
         this.start = start;
-        this.total = total;
+        //this.total = total;
     }
 
     public int getEnd() {
@@ -25,11 +27,11 @@ public class MangaResponse {
         this.end = end;
     }
 
-    public Manga[] getManga() {
+    public List<Manga> getManga() {
         return manga;
     }
 
-    public void setManga(Manga[] manga) {
+    public void setManga(List<Manga> manga) {
         this.manga = manga;
     }
 
@@ -49,11 +51,11 @@ public class MangaResponse {
         this.start = start;
     }
 
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
+//    public int getTotal() {
+//        return total;
+//    }
+//
+//    public void setTotal(int total) {
+//        this.total = total;
+//    }
 }

@@ -1,19 +1,18 @@
-package com.example.mangareader;
+package com.example.mangareader.model.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 
-import com.example.mangareader.remote.MangaResponse;
-import com.example.mangareader.remote.MangasApi;
-import com.example.mangareader.remote.RetrofitClass;
+import com.example.mangareader.model.Manga;
+import com.example.mangareader.model.MangaDao;
+import com.example.mangareader.model.MangaRoomDatabase;
+import com.example.mangareader.model.AllMangas;
+import com.example.mangareader.model.remote.MangasApi;
+import com.example.mangareader.model.remote.RetrofitClass;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,17 +30,17 @@ public class MangaRepository {
         mangaDao = db.mangaDao();
         allMangas = mangaDao.getAllMangas();
         MangasApi mangasApi = RetrofitClass.getApiService();
-        Call<MangaResponse> call = mangasApi.getMangas();
-        call.enqueue(new Callback<MangaResponse>() {
+        Call<AllMangas> call = mangasApi.getMangas();
+        call.enqueue(new Callback<AllMangas>() {
             @Override
-            public void onResponse(Call<MangaResponse> call, Response<MangaResponse> response) {
+            public void onResponse(Call<AllMangas> call, Response<AllMangas> response) {
                 if(response.body() != null)
                     insert(response.body());
                 else
                     Log.d(TAG, "onResponse: null" + response);
             }
             @Override
-            public void onFailure(Call<MangaResponse> call, Throwable t) {
+            public void onFailure(Call<AllMangas> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage() + "\n" + t.getCause());
             }
         });
@@ -51,23 +50,22 @@ public class MangaRepository {
         return allMangas;
     }
 
-    public void insert (MangaResponse mangaResponses) {
-        new insertAsyncTask(mangaDao).execute(mangaResponses);
+    public void insert (AllMangas AllMangass) {
+        new insertAsyncTask(mangaDao).execute(AllMangass);
     }
-    private static class insertAsyncTask extends AsyncTask<MangaResponse, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<AllMangas, Void, Void> {
         private MangaDao asyncMangaDao;
         public insertAsyncTask(MangaDao mangaDao) {
             this.asyncMangaDao = mangaDao;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
-        protected final Void doInBackground(MangaResponse... mangaResponses) { // 7021 mangas à la base
+        protected final Void doInBackground(AllMangas... AllMangass) { // 7021 mangas à la base
             int nbRows = asyncMangaDao.getNumberOfRows();
             Log.i(TAG, "doInBackground: nbRows : " + nbRows);
             if(nbRows < 500) { // check si y a déjà la data dans la base
-                List<Manga> filteredMangas = Arrays.asList(mangaResponses[0].getManga());
-                filteredMangas = filteredMangas.stream().filter(manga -> manga.getId() != null && manga.getImage() != null).collect(Collectors.toList());
+                List<Manga> filteredMangas;// = Arrays.asList(AllMangass[0].getManga());
+                filteredMangas = AllMangass[0].getManga().stream().filter(manga -> manga.getId() != null && manga.getImage() != null).collect(Collectors.toList());
                 Collections.sort(filteredMangas);
                 for (int i = 0; i < filteredMangas.size() / 10; i++) {
                     asyncMangaDao.insert(filteredMangas.get(i));

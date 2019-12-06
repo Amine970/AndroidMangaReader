@@ -1,4 +1,4 @@
-package com.example.mangareader;
+package com.example.mangareader.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

@@ -1,37 +1,51 @@
-package com.example.mangareader;
+package com.example.mangareader.view.ui;
+
 
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
 
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.mangareader.R;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class MainActivity extends AppCompatActivity {
 
-    private MangaViewModel mangaViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AllMangasFragment()).commit();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final MangaListAdapter adapter = new MangaListAdapter(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // GridLayoutManager(this, 2)  // LinearLayoutManager(this)
-        mangaViewModel = ViewModelProviders.of(this).get(MangaViewModel.class);
-        mangaViewModel.getAllMangas().observe(this, mangas -> adapter.setMangas(mangas));
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
+        Fragment selectedFragment = null;
+        switch (menuItem.getItemId()) {
+            case R.id.nav_decouvrir :
+                selectedFragment = new AllMangasFragment();
+                break;
+            case R.id.nav_recent :
+                selectedFragment = new RecentChaptersFragment();
+                break;
+            case R.id.nav_favorite :
+                selectedFragment = new FavoriteFragment();
+                break;
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                selectedFragment).commit();
+        return true;
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

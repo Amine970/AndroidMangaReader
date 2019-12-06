@@ -1,16 +1,16 @@
-package com.example.mangareader;
+package com.example.mangareader.view.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mangareader.R;
+import com.example.mangareader.model.Manga;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -38,11 +38,6 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     public void onBindViewHolder(@NonNull MangaViewHolder holder, int position) {
         if(mangas != null) {
             Manga current = mangas.get(position);
-            String text = current.getTitle();
-            if (text.length() >= 12) {
-                text = text.substring(0, 11) + "...";
-            }
-            //holder.mangaTitle.setText(text);
             Picasso.get()
                     .load(current.getImage())
                     .placeholder(R.drawable.ic_manga_placeholder)
@@ -56,11 +51,9 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     }
 
     public class MangaViewHolder extends RecyclerView.ViewHolder {
-        //private final TextView mangaTitle;
         private final ImageView mangaImageView;
         public MangaViewHolder(@NonNull View itemView) {
             super(itemView);
-            //mangaTitle = itemView.findViewById(R.id.textView);
             mangaImageView = itemView.findViewById(R.id.mangaImage);
         }
     }

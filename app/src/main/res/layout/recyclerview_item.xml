@@ -12,29 +12,17 @@
         android:layout_marginTop="@dimen/mtrl_card_spacing"
         android:layout_marginRight="@dimen/mtrl_card_spacing"
         android:layout_marginBottom="10dp"
-        android:minHeight="200dp"
-        android:layout_gravity="center">
-            <!--
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="5dp"
-                tools:text="placeholder text" />
-                -->
-
+        android:layout_gravity="center"
+        >
         <!-- Card contents. -->
         <ImageView
             android:id="@+id/mangaImage"
-            android:layout_width="170dp"
-            android:layout_height="245dp"
+            android:layout_width="100dp"
+            android:layout_height="155dp"
             android:src="@drawable/ic_launcher_background"
             android:layout_gravity="center"
             />
+
         <!-- height = width * (350/221) -->
 
     </com.google.android.material.card.MaterialCardView>

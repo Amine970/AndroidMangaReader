@@ -1,10 +1,13 @@
-package com.example.mangareader;
+package com.example.mangareader.viewmodel;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.example.mangareader.model.Manga;
+import com.example.mangareader.model.repository.MangaRepository;
 
 import java.util.List;
 
