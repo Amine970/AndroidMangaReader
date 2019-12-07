@@ -1,5 +1,6 @@
 package com.example.mangareader.model;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -10,12 +11,15 @@ import java.util.List;
 @Dao
 public interface ChapterDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert()   //onConflict = OnConflictStrategy.IGNORE
     void insert(Chapter chapter);
 
-    @Query("SELECT * from chapters_table ORDER BY date DESC")
-    List<Chapter> getAllChapters();
+    @Query("SELECT * from chapters_table")
+    LiveData<List<Chapter>> getAllChapters();
 
-    @Query("SELECT COUNT(*) FROM mangas_table")
-    int getNumberOfRows();
+    @Query("SELECT * from chapters_table WHERE date > :time")   // linux timestamp,  WHERE date > :time
+    LiveData<List<Chapter>> getRecentChapters(Long time);    //Long time
+
+    @Query("SELECT COUNT(*) FROM chapters_table")
+    int getNumberOfChapters();
 }

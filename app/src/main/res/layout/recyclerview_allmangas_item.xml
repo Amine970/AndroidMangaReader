@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.MaterialComponents.CardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/mtrl_card_spacing"
+        android:layout_marginTop="@dimen/mtrl_card_spacing"
+        android:layout_marginRight="@dimen/mtrl_card_spacing"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
+        >
+        <!-- Card contents. -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <ImageView
+                android:id="@+id/mangaImage"
+                android:layout_width="100dp"
+                android:layout_height="145dp"
+                android:src="@drawable/ic_launcher_background"
+                android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/all_mangaTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="3dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="text"
+                android:maxLines="1"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/mangaImage"/>
+        </RelativeLayout>
+
+        <!-- height = width * (350/221) -->
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

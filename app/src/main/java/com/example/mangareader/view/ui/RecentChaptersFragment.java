@@ -4,13 +4,20 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mangareader.R;
+import com.example.mangareader.view.adapter.ChaptersListAdapter;
+import com.example.mangareader.viewmodel.ChaptersViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +39,7 @@ public class RecentChaptersFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private ChaptersViewModel chaptersViewModel;
     public RecentChaptersFragment() {
         // Required empty public constructor
     }
@@ -61,6 +69,17 @@ public class RecentChaptersFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        RecyclerView recyclerView = view.findViewById(R.id.recent_recyclerview);
+        final ChaptersListAdapter adapter = new ChaptersListAdapter(getActivity());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        chaptersViewModel = ViewModelProviders.of(this).get(ChaptersViewModel.class);
+        chaptersViewModel.getRecentChapters().observe(this, chapters -> adapter.setChapters(chapters));
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,16 +22,13 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     private static final String TAG = "debugging";
     public MangaListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
     public void  setMangas(List<Manga> mangas) {
-        //Log.i("debugging", "setMangas: new size: " +  mangas.size());
         this.mangas = mangas;
-        //for(Manga x : mangas)
-          //  Log.i("debugging", "setMangas: date -> " + x.getLastChapterDate());
         notifyDataSetChanged();
     }
     @NonNull
     @Override
     public MangaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.recyclerview_item, parent, false);
+        View itemView = mInflater.inflate(R.layout.recyclerview_allmangas_item, parent, false);
         return new MangaViewHolder(itemView);
     }
 
@@ -38,6 +36,8 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     public void onBindViewHolder(@NonNull MangaViewHolder holder, int position) {
         if(mangas != null) {
             Manga current = mangas.get(position);
+            String title = current.getTitle();
+            holder.mangaTitleView.setText(title.length() > 10 ? title.substring(0,10)+"..." : title);
             Picasso.get()
                     .load(current.getImage())
                     .placeholder(R.drawable.ic_manga_placeholder)
@@ -51,10 +51,12 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     }
 
     public class MangaViewHolder extends RecyclerView.ViewHolder {
+        private final TextView mangaTitleView;
         private final ImageView mangaImageView;
         public MangaViewHolder(@NonNull View itemView) {
             super(itemView);
             mangaImageView = itemView.findViewById(R.id.mangaImage);
+            mangaTitleView = itemView.findViewById(R.id.all_mangaTitle);
         }
     }
 }

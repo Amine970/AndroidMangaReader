@@ -9,12 +9,13 @@ import androidx.room.TypeConverters;
 
 import com.example.mangareader.Converters;
 
-@Database(entities = {Manga.class}, version = 1, exportSchema = false)
+@Database(entities = {Manga.class, Chapter.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MangaRoomDatabase extends RoomDatabase {
     private static final String TAG = "debugging";
     private static MangaRoomDatabase INSTANCE;
     public abstract MangaDao mangaDao();
+    public abstract ChapterDao chapterDao();
 
     public static MangaRoomDatabase getDatabase(final Context context) {
         if(INSTANCE == null) {

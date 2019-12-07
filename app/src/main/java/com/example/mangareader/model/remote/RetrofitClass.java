@@ -18,4 +18,7 @@ public class RetrofitClass
     {
         return getRetroInstance().create(MangasApi.class);
     }
+    public static ChaptersApi getChaptersApiService() {
+        return getRetroInstance().create(ChaptersApi.class);
+    }
 }

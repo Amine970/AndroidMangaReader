@@ -1,7 +1,5 @@
 package com.example.mangareader.model;
 
-import com.example.mangareader.model.Manga;
-
 import java.util.List;
 
 public class AllMangas {
@@ -9,14 +7,12 @@ public class AllMangas {
     private List<Manga> manga;
     private int page;
     private int start;
-    //private int total;
 
     public AllMangas(int end, List<Manga> manga, int page, int start){//, int total) {
         this.end = end;
         this.manga = manga;
         this.page = page;
         this.start = start;
-        //this.total = total;
     }
 
     public int getEnd() {
@@ -51,11 +47,4 @@ public class AllMangas {
         this.start = start;
     }
 
-//    public int getTotal() {
-//        return total;
-//    }
-//
-//    public void setTotal(int total) {
-//        this.total = total;
-//    }
 }

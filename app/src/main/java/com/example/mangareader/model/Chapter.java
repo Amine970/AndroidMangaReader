@@ -7,24 +7,23 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "chapters_table")
 public class Chapter {
     @NonNull
+    @PrimaryKey
+    private String id;
+    @NonNull
     private int number;
     @NonNull
     private long date;
     @NonNull
     private String title;
     @NonNull
-    @PrimaryKey
-    private String id;
-    private String description;
-
-    public Chapter(int number, long date, @NonNull String title, @NonNull String id, String description) {
+    private String mangaId;
+    public Chapter(int number, long date, @NonNull String title, @NonNull String id, @NonNull String mangaId) {
         this.number = number;
         this.date = date;
         this.title = title;
         this.id = id;
-        this.description = description;
+        this.mangaId = mangaId;
     }
-
     public int getNumber() {
         return number;
     }
@@ -43,7 +42,8 @@ public class Chapter {
         return id;
     }
 
-    public String getDescription() {
-        return description;
+    @NonNull
+    public String getMangaId() {
+        return mangaId;
     }
 }

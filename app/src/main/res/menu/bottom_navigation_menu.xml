@@ -8,7 +8,7 @@
          />
     <item android:id="@+id/nav_recent"
         android:icon="@drawable/ic_access_time_black_24dp"
-        android:title="Recent Chapter"
+        android:title="Recent Chapters"
         app:showAsAction="ifRoom"
         />
     <item android:id="@+id/nav_favorite"

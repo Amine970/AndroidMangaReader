@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        tools:listitem="@layout/recyclerview_item"
+        tools:listitem="@layout/recyclerview_allmangas_item"
         android:scrollbars="vertical"
         />
 
