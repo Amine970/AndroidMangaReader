@@ -34,7 +34,7 @@ public class ChaptersRepository {
         allChapters = chapterDao.getAllChapters();
         Long tsLong = System.currentTimeMillis()/1000;
         recentChapters = chapterDao.getRecentChapters(tsLong - 2*604800);//tsLong - 2*604800);   //nb Secondes en 1 semaine = 7*24*60*60 = 604800
-        new insertAsyncTask(chapterDao, mangaDao).execute();
+        //new insertAsyncTask(chapterDao, mangaDao).execute();
     }
 
     public LiveData<List<Chapter>> getAllChapters() {
@@ -45,7 +45,8 @@ public class ChaptersRepository {
         return recentChapters;
     }
 
-    public static class insertAsyncTask extends AsyncTask<Void, Void, Void> {
+    /*
+        public static class insertAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private ChapterDao chapterDao;
         private MangaDao mangaDao;
@@ -98,4 +99,6 @@ public class ChaptersRepository {
             return null;
         }
     }
+     */
+
 }

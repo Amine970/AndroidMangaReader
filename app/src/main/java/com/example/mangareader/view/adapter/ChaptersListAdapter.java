@@ -1,6 +1,7 @@
 package com.example.mangareader.view.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mangareader.R;
 import com.example.mangareader.model.Chapter;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 public class ChaptersListAdapter extends RecyclerView.Adapter<ChaptersListAdapter.ChapterViewHolder>{
 
     private List<Chapter> chapters;
     private final LayoutInflater mInflater;
+    private static final String TAG = "debugging";
+
     public ChaptersListAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
     }
@@ -38,24 +43,32 @@ public class ChaptersListAdapter extends RecyclerView.Adapter<ChaptersListAdapte
     public void onBindViewHolder(@NonNull ChaptersListAdapter.ChapterViewHolder holder, int position) {
         if(chapters != null) {
             Chapter current = chapters.get(position);
-            holder.chapterTitle.setText(current.getTitle());
-            holder.chapterDate.setText("date place holder");
+            //Log.i(TAG, "onBindViewHolder: title -> " + current.getTitle());
+            holder.mangaTitle.setText(current.getMangaTitle());
+            Timestamp ts=new Timestamp(current.getDate()*1000);
+            Date date=new Date(ts.getTime());
+            //System.out.println(date);
+            holder.chapterDate.setText(date.toString());
+            holder.chapterNumber.setText(String.format("%d",current.getNumber()));
         }
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        //Log.i(TAG, "getItemCount: size -> " + (chapters != null ? chapters.size() : 0));
+        return chapters != null ? chapters.size() : 0;
     }
 
 
     public class ChapterViewHolder extends RecyclerView.ViewHolder {
-        private TextView chapterTitle;
+        private TextView mangaTitle;
         private TextView chapterDate;
+        private TextView chapterNumber;
         public ChapterViewHolder(@NonNull View itemView) {
             super(itemView);
             chapterDate = itemView.findViewById(R.id.recent_mangaDate);
-            chapterTitle = itemView.findViewById(R.id.recent_mangaTitle);
+            mangaTitle = itemView.findViewById(R.id.recent_mangaTitle);
+            chapterNumber = itemView.findViewById(R.id.recent_mangaNumber);
         }
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface ChapterDao {
 
-    @Insert()   //onConflict = OnConflictStrategy.IGNORE
+    @Insert(onConflict = OnConflictStrategy.IGNORE)   //onConflict = OnConflictStrategy.IGNORE
     void insert(Chapter chapter);
 
     @Query("SELECT * from chapters_table")

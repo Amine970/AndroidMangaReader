@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -77,9 +78,9 @@ public class RecentChaptersFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recent_recyclerview);
         final ChaptersListAdapter adapter = new ChaptersListAdapter(getActivity());
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         chaptersViewModel = ViewModelProviders.of(this).get(ChaptersViewModel.class);
-        chaptersViewModel.getRecentChapters().observe(this, chapters -> adapter.setChapters(chapters));
+        chaptersViewModel.getAllChapters().observe(this, chapters -> adapter.setChapters(chapters));
     }
 
     @Override
