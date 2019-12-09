@@ -1,40 +1,103 @@
 package com.example.mangareader.model.repository;
 
 import android.app.Application;
-import android.os.AsyncTask;
+import android.telecom.Call;
 import android.util.Log;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
 
 import com.example.mangareader.model.Chapter;
 import com.example.mangareader.model.ChapterDao;
 import com.example.mangareader.model.Manga;
 import com.example.mangareader.model.MangaDao;
-import com.example.mangareader.model.MangaDetails;
 import com.example.mangareader.model.MangaRoomDatabase;
-import com.example.mangareader.model.remote.ChaptersApi;
 import com.example.mangareader.model.remote.RetrofitClass;
+import com.example.mangareader.view.ui.MainActivity;
+import com.example.mangareader.view.ui.RecentChaptersFragment;
 
+import org.reactivestreams.Publisher;
+
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class ChaptersRepository {
+    private static final String TAG = "debugging";
+
     private ChapterDao chapterDao;
     private MangaDao mangaDao;
     private LiveData<List<Chapter>> allChapters;
     private LiveData<List<Chapter>> recentChapters;
+    //private LiveData<List<Manga>> mangasWithRecentChapter;
     public ChaptersRepository(Application application) {
         MangaRoomDatabase db = MangaRoomDatabase.getDatabase(application);
         chapterDao = db.chapterDao();
         mangaDao = db.mangaDao();
+        //mangasWithRecentChapter = mangaDao.getMangasWithRecentChapter();
         allChapters = chapterDao.getAllChapters();
         Long tsLong = System.currentTimeMillis()/1000;
-        recentChapters = chapterDao.getRecentChapters(tsLong - 2*604800);//tsLong - 2*604800);   //nb Secondes en 1 semaine = 7*24*60*60 = 604800
+        recentChapters = chapterDao.getRecentChapters(tsLong - 2*604800);
+        //recentChapters = chapterDao.getRecentChapters(tsLong - 2*604800);//tsLong - 2*604800);   //nb Secondes en 1 semaine = 7*24*60*60 = 604800
         //new insertAsyncTask(chapterDao, mangaDao).execute();
+        Observable<Manga> mangasWithRecentChapter = Observable
+                .fromCallable(() -> mangaDao.getMangasWithRecentChapter())
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())    //AndroidSchedulers.mainThread()
+                .flatMap(new Function<List<Manga>, ObservableSource<Manga>>() {
+                    @Override
+                    public ObservableSource<Manga> apply(List<Manga> mangas) throws Exception {
+                        return Observable.fromIterable(mangas).subscribeOn(Schedulers.io());
+                    }
+                });
+        mangasWithRecentChapter.subscribe(new Observer<Manga>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+            @Override
+            public void onNext(Manga myManga) {
+                getDetailsObservable(myManga).subscribe(new Observer<Manga>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+                    @Override
+                    public void onNext(Manga manga) {
+                        Log.i(TAG, "onNext: " + myManga.getTitle());
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "onError: " + e + "\n" + e.getCause() + "\n" + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     public LiveData<List<Chapter>> getAllChapters() {
@@ -44,61 +107,40 @@ public class ChaptersRepository {
     public LiveData<List<Chapter>> getRecentChapters() {
         return recentChapters;
     }
-
-    /*
-        public static class insertAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        private ChapterDao chapterDao;
-        private MangaDao mangaDao;
-        private List<String> allMangasIds;
-        private static final String TAG = "debugging";
-
-        public insertAsyncTask(ChapterDao chapterDao, MangaDao mangaDao) {
-            this.chapterDao = chapterDao;
-            this.mangaDao = mangaDao;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            ChaptersApi chaptersApi = RetrofitClass.getChaptersApiService();
-            allMangasIds = mangaDao.getAllMangasIds();
-            for(String mangaId : allMangasIds) {
-                //Log.i(TAG, "onResponse: manga id -> " + mangaId);
-                Log.i(TAG, "onResponse: un manga done, nbChapters inserted  ->  " + chapterDao.getNumberOfChapters());
-
-                Call<MangaDetails> call = chaptersApi.getMangaDetails(mangaId);
-                call.enqueue(new Callback<MangaDetails>() {
+    private Observable<Manga> getDetailsObservable(final Manga manga) {
+        return RetrofitClass.getApiService()
+                .getMangaDetails(manga.getId())
+                .map(new Function<Manga, Manga>() {
                     @Override
-                    public void onResponse(Call<MangaDetails> call, Response<MangaDetails> response) {
-                        MangaDetails details = response.body();
-                        if(details != null) {
-                            Log.i(TAG, "onResponse: details non null");
-                            for(List<String> chap : details.getChapters()) {
-                                Log.i(TAG, "onResponse: non nul du coup dans for");
-                                int nonDigitsChapDate = chap.get(1).replaceAll("[^0-9]", "").length();
-                                int nonDigitsChapNum = chap.get(0).replaceAll("[^0-9]", "").length();
-                                if(nonDigitsChapDate == 0 && nonDigitsChapNum == 0) {
-                                    Log.i(TAG, "onResponse: manga id -> " + mangaId +" chapNum -> " + chap.get(0) + " chapDate-> " + chap.get(1) + " chapTitle-> " + chap.get(2) + "\n");
-                                    Chapter chapter = new Chapter(Integer.parseInt(chap.get(0)),Long.parseLong(chap.get(1)), chap.get(2),chap.get(3), mangaId);
-                                    chapterDao.insert(chapter);
-                                }
-                                //else
-                                    //Log.i(TAG, "onResponse: erreur non entier");
-                            }
+                    public Manga apply(Manga mangaDetails) throws Exception {
+                        //Log.i(TAG, "applyDetails: ici avec " + mangaDetails.getAuthor());
+                        manga.setAuthor(mangaDetails.getAuthor());
+                        manga.setMangaChaptersFromStringsList(mangaDetails.getChapters());
+                        manga.setDescription(mangaDetails.getDescription());
+                        manga.setReleased(mangaDetails.getReleased());
+                        /*
+                         @Query("UPDATE mangas_table SET author = :author, description = :description, released = :released")
+    void updateChapter(String author, String description, int released);
+                         */
+                        mangaDao.updateChapter(mangaDetails.getAuthor(), mangaDetails.getDescription(), mangaDetails.getReleased());
+                        /*Observable.fromIterable(manga.getMangaChapters())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(chapter -> chapterDao.insert(chapter));*/
+                        //Thread.sleep(2000);
+                        Log.i(TAG, "apply: nbchapter de ce manga -> " + manga.getMangaChapters().size());
+                        for(Chapter chapter : manga.getMangaChapters()) {
+                            chapter.setMangaTitle(manga.getTitle());
+                            chapter.setHits(manga.getHits());
+                            chapterDao.insert(chapter);
                         }
-                        //else Log.i(TAG, "onResponse: response null lol");
-                    }
-                    @Override
-                    public void onFailure(Call<MangaDetails> call, Throwable t) {
-                        Log.d(TAG, "onFailure: " + t.getMessage() + "\n" + t.getCause());
-                    }
-                });
 
-            }
-
-            return null;
-        }
+                        //chapterDao.insert(manga.getMangaChapters().get(0));
+                        Log.i(TAG, "apply: nb chapters inserted -> " + chapterDao.getNumberOfChapters() );
+                        return manga;
+                    }
+                })
+                .subscribeOn(Schedulers.io());
     }
-     */
 
 }

@@ -11,13 +11,13 @@ import java.util.List;
 @Dao
 public interface ChapterDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)   //onConflict = OnConflictStrategy.IGNORE
+    @Insert(onConflict = OnConflictStrategy.IGNORE)   //
     void insert(Chapter chapter);
 
     @Query("SELECT * from chapters_table")
     LiveData<List<Chapter>> getAllChapters();
 
-    @Query("SELECT * from chapters_table WHERE date > :time")   // linux timestamp,  WHERE date > :time
+    @Query("SELECT * from chapters_table WHERE date > :time ORDER BY hits DESC")   // linux timestamp,  WHERE date > :time
     LiveData<List<Chapter>> getRecentChapters(Long time);    //Long time
 
     @Query("SELECT COUNT(*) FROM chapters_table")

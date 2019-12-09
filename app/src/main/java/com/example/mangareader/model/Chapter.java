@@ -21,6 +21,7 @@ public class Chapter {
     private String title;
     @NonNull
     private String mangaId;
+    private long hits;
 
     @NonNull
     public String getMangaTitle() {
@@ -33,7 +34,7 @@ public class Chapter {
 
     @NonNull
     private String mangaTitle;
-    public Chapter(int number, long date, @NonNull String title, @NonNull String id, @NonNull String mangaId) {
+    public Chapter(int number, long date, @NonNull String title, @NonNull String id, @NonNull String mangaId, long hits) {
         this.number = number;
         this.date = date;
         this.title = title;
@@ -74,5 +75,13 @@ public class Chapter {
     @NonNull
     public String getMangaId() {
         return mangaId;
+    }
+
+    public long getHits() {
+        return hits;
+    }
+
+    public void setHits(long hits) {
+        this.hits = hits;
     }
 }

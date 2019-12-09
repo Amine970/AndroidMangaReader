@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mangareader.R;
+import com.example.mangareader.model.ChapterDao;
+import com.example.mangareader.model.MangaDao;
 import com.example.mangareader.view.adapter.ChaptersListAdapter;
 import com.example.mangareader.viewmodel.ChaptersViewModel;
 
@@ -44,6 +47,9 @@ public class RecentChaptersFragment extends Fragment {
     public RecentChaptersFragment() {
         // Required empty public constructor
     }
+
+    private MangaDao mangaDao;
+    private ChapterDao chapterDao;
 
     /**
      * Use this factory method to create a new instance of
@@ -80,7 +86,7 @@ public class RecentChaptersFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         chaptersViewModel = ViewModelProviders.of(this).get(ChaptersViewModel.class);
-        chaptersViewModel.getAllChapters().observe(this, chapters -> adapter.setChapters(chapters));
+        chaptersViewModel.getRecentChapters().observe(this, chapters -> adapter.setChapters(chapters));
     }
 
     @Override

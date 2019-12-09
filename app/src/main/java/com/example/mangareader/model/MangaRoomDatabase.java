@@ -59,7 +59,7 @@ public abstract class MangaRoomDatabase extends RoomDatabase {
             //mDao.deleteAll();
 
             for (int i = 0; i < 10; i++) {
-                Chapter chapter  = new Chapter(i, 123, "titre"+i, "id"+i, "mangaId");
+                Chapter chapter  = new Chapter(i, 123, "titre"+i, "id"+i, "mangaId", 0);
                 mDao.insert(chapter);
             }
             return null;

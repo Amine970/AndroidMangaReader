@@ -32,37 +32,28 @@ public class Manga implements Comparable<Manga>{
     @NonNull
     @SerializedName("h")
     private long hits;
-    @NonNull
+    /////////////////////////// DETAILS //////////////////////////////
     @Ignore
     private List<Chapter> mangaChapters;
-    @NonNull
     @Ignore
-    @SerializedName("chapters")
     private List<List<String>> chapters;
-    @NonNull
     private String author;
-    @NonNull
     private String description;
-    @NonNull
     private int released;   // année
-    public Manga(@NonNull String id, @NonNull String image, @NonNull String title, @NonNull String[] category, long lastChapterDate, long hits) {
+
+    public Manga(@NonNull String id, @NonNull String image, @NonNull String title, @NonNull String[] category, long lastChapterDate, long hits, String author, String description, int released) {
         this.id = id;
         this.image = "https://cdn.mangaeden.com/mangasimg/" + image;
         this.title = title;
         this.category = category;
         this.lastChapterDate = lastChapterDate;
         this.hits = hits;
+        this.author = author;
+        this.description = description;
+        this.released = released;
     }
-    public Manga(@NonNull String id, @NonNull String image, @NonNull String title, @NonNull String[] category, long lastChapterDate, long hits, List<List<String>> chapters) {
-        this.id = id;
-        this.image = "https://cdn.mangaeden.com/mangasimg/" + image;
-        this.title = title;
-        this.category = category;
-        this.lastChapterDate = lastChapterDate;
-        this.hits = hits;
-        this.chapters = chapters;
-    }
-    public void setMangaChapters1(@NonNull List<List<String>> chapters) {
+
+    public void setMangaChaptersFromStringsList(@NonNull List<List<String>> chapters) {
         List<Chapter> listChapters = new ArrayList<>();
 
         for(List<String> chap : chapters) {
@@ -73,7 +64,7 @@ public class Manga implements Comparable<Manga>{
             String chapNum = chap.get(0).replaceAll("[^0-9].*", "");
             String chapDate =  chap.get(1).replaceAll("[^0-9].*", "");
             if(good)
-                listChapters.add(new Chapter(Integer.parseInt(chapNum),Long.parseLong(chapDate), chap.get(2),chap.get(3), id));
+                listChapters.add(new Chapter(Integer.parseInt(chapNum),Long.parseLong(chapDate), chap.get(2),chap.get(3), id, 0));
         }
         this.mangaChapters = listChapters;
     }
@@ -140,10 +131,6 @@ public class Manga implements Comparable<Manga>{
         return hits;
     }
 
-    @Override
-    public int compareTo(Manga o) {
-        return Long.compare(o.hits, this.hits);
-    }
 
     public void setId(@NonNull String id) {
         this.id = id;
@@ -176,4 +163,10 @@ public class Manga implements Comparable<Manga>{
     public void setChapters(@NonNull List<List<String>> chapters) {
         this.chapters = chapters;
     }
+
+    @Override
+    public int compareTo(Manga o) {
+        return Long.compare(o.hits, this.hits);
+    }
+
 }
