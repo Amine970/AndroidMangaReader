@@ -1,12 +1,9 @@
 package com.example.mangareader.model.repository;
 
 import android.app.Application;
-import android.telecom.Call;
 import android.util.Log;
 
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 
 import com.example.mangareader.model.Chapter;
 import com.example.mangareader.model.ChapterDao;
@@ -14,20 +11,13 @@ import com.example.mangareader.model.Manga;
 import com.example.mangareader.model.MangaDao;
 import com.example.mangareader.model.MangaRoomDatabase;
 import com.example.mangareader.model.remote.RetrofitClass;
-import com.example.mangareader.view.ui.MainActivity;
-import com.example.mangareader.view.ui.RecentChaptersFragment;
-
-import org.reactivestreams.Publisher;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -39,17 +29,14 @@ public class ChaptersRepository {
     private MangaDao mangaDao;
     private LiveData<List<Chapter>> allChapters;
     private LiveData<List<Chapter>> recentChapters;
-    //private LiveData<List<Manga>> mangasWithRecentChapter;
     public ChaptersRepository(Application application) {
         MangaRoomDatabase db = MangaRoomDatabase.getDatabase(application);
         chapterDao = db.chapterDao();
         mangaDao = db.mangaDao();
-        //mangasWithRecentChapter = mangaDao.getMangasWithRecentChapter();
         allChapters = chapterDao.getAllChapters();
         Long tsLong = System.currentTimeMillis()/1000;
         recentChapters = chapterDao.getRecentChapters(tsLong - 2*604800);
         //recentChapters = chapterDao.getRecentChapters(tsLong - 2*604800);//tsLong - 2*604800);   //nb Secondes en 1 semaine = 7*24*60*60 = 604800
-        //new insertAsyncTask(chapterDao, mangaDao).execute();
         Observable<Manga> mangasWithRecentChapter = Observable
                 .fromCallable(() -> mangaDao.getMangasWithRecentChapter())
                 .subscribeOn(Schedulers.io())
@@ -118,16 +105,7 @@ public class ChaptersRepository {
                         manga.setMangaChaptersFromStringsList(mangaDetails.getChapters());
                         manga.setDescription(mangaDetails.getDescription());
                         manga.setReleased(mangaDetails.getReleased());
-                        /*
-                         @Query("UPDATE mangas_table SET author = :author, description = :description, released = :released")
-    void updateChapter(String author, String description, int released);
-                         */
                         mangaDao.updateChapter(mangaDetails.getAuthor(), mangaDetails.getDescription(), mangaDetails.getReleased());
-                        /*Observable.fromIterable(manga.getMangaChapters())
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(chapter -> chapterDao.insert(chapter));*/
-                        //Thread.sleep(2000);
                         Log.i(TAG, "apply: nbchapter de ce manga -> " + manga.getMangaChapters().size());
                         for(Chapter chapter : manga.getMangaChapters()) {
                             chapter.setMangaTitle(manga.getTitle());

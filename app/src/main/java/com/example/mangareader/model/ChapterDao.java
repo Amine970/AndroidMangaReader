@@ -17,7 +17,7 @@ public interface ChapterDao {
     @Query("SELECT * from chapters_table")
     LiveData<List<Chapter>> getAllChapters();
 
-    @Query("SELECT * from chapters_table WHERE date > :time ORDER BY hits DESC")   // linux timestamp,  WHERE date > :time
+    @Query("SELECT * from chapters_table WHERE date > :time ORDER BY date DESC")   // linux timestamp,  WHERE date > :time
     LiveData<List<Chapter>> getRecentChapters(Long time);    //Long time
 
     @Query("SELECT COUNT(*) FROM chapters_table")

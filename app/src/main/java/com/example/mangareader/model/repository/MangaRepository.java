@@ -11,7 +11,9 @@ import com.example.mangareader.model.MangaRoomDatabase;
 import com.example.mangareader.model.AllMangas;
 import com.example.mangareader.model.remote.RetrofitClass;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +64,11 @@ public class MangaRepository {
                 .map(AllMangas::getManga)
                 .flatMap((Function<List<Manga>, ObservableSource<Manga>>) mangas -> {
                     //Log.i(TAG, "apply: " + mangas.get(0).getTitle() + " id -> " + mangas.get(0).getTitle());
-                    return Observable.fromIterable(mangas.stream().filter(manga -> manga.getId() != null && manga.getImage() != null).collect(Collectors.toList()))
+                    Collections.sort(mangas);
+                    List<Manga> reducedList = new ArrayList<>();
+                    for(int i = 0; i < Math.min(300, mangas.size()); i++)
+                        reducedList.add(mangas.get(i));
+                    return Observable.fromIterable(reducedList.stream().filter(manga -> manga.getId() != null && manga.getImage() != null).collect(Collectors.toList()))
                             .subscribeOn(Schedulers.io());
                 })
                 .sorted();
