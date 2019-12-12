@@ -11,14 +11,17 @@ import com.example.mangareader.model.repository.ChaptersRepository;
 
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public class ChaptersViewModel extends AndroidViewModel {
 
     private LiveData<List<Chapter>> recentChapters;
     private LiveData<List<Chapter>> allChapters;
+    private ChaptersRepository chaptersRepository;
 
     public ChaptersViewModel(@NonNull Application application) {
         super(application);
-        ChaptersRepository chaptersRepository = new ChaptersRepository(application);
+        chaptersRepository = new ChaptersRepository(application);
         recentChapters = chaptersRepository.getRecentChapters();
         allChapters = chaptersRepository.getAllChapters();
 
@@ -29,6 +32,9 @@ public class ChaptersViewModel extends AndroidViewModel {
     }
     public LiveData<List<Chapter>> getAllChapters() {
         return allChapters;
+    }
+    public CompositeDisposable getDisposables() {
+        return chaptersRepository.recentChaptersCompositeDisposable;
     }
 
 }

@@ -22,4 +22,7 @@ public interface ChapterDao {
 
     @Query("SELECT COUNT(*) FROM chapters_table")
     int getNumberOfChapters();
+
+    @Query("DELETE FROM chapters_table")
+    void deleteAll();
 }

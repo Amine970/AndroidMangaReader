@@ -1,6 +1,7 @@
 package com.example.mangareader.view.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mangareader.R;
 import com.example.mangareader.model.Manga;
+import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MangaViewHolder>{
     private final LayoutInflater mInflater;
-    private List<Manga> mangas; // Cached copy of words
+    private List<Manga> mangas; // Cached copy of mangas
+    private OnItemClickListener myListener;
     private static final String TAG = "debugging";
     public MangaListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
     public void  setMangas(List<Manga> mangas) {
@@ -50,13 +53,34 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
         return mangas != null ? mangas.size() : 0;
     }
 
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        myListener = listener;
+    }
     public class MangaViewHolder extends RecyclerView.ViewHolder {
         private final TextView mangaTitleView;
         private final ImageView mangaImageView;
+        private final MaterialCardView cardView;
         public MangaViewHolder(@NonNull View itemView) {
             super(itemView);
             mangaImageView = itemView.findViewById(R.id.mangaImage);
             mangaTitleView = itemView.findViewById(R.id.all_mangaTitle);
+            cardView = itemView.findViewById(R.id.cardview);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(myListener != null) {
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION) {
+                            //Log.i(TAG, "onClick: dans adapter position envoie -> " + position + " author -> " + mangas.get(position).getAuthor());
+                            myListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

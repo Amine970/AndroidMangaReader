@@ -23,6 +23,8 @@ import com.example.mangareader.model.MangaDao;
 import com.example.mangareader.view.adapter.ChaptersListAdapter;
 import com.example.mangareader.viewmodel.ChaptersViewModel;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -50,6 +52,7 @@ public class RecentChaptersFragment extends Fragment {
 
     private MangaDao mangaDao;
     private ChapterDao chapterDao;
+    private CompositeDisposable disposable;
 
     /**
      * Use this factory method to create a new instance of
@@ -87,6 +90,7 @@ public class RecentChaptersFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         chaptersViewModel = ViewModelProviders.of(this).get(ChaptersViewModel.class);
         chaptersViewModel.getRecentChapters().observe(this, chapters -> adapter.setChapters(chapters));
+        disposable = chaptersViewModel.getDisposables();
     }
 
     @Override
@@ -106,6 +110,7 @@ public class RecentChaptersFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        disposable.dispose();
         mListener = null;
     }
 

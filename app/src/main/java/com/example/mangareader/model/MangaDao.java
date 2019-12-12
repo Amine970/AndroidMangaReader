@@ -18,7 +18,7 @@ public interface MangaDao {
     @Query("SELECT * from mangas_table ORDER BY hits DESC")
     LiveData<List<Manga>> getAllMangas();
 
-    @Query("SELECT * from (SELECT * from mangas_table ORDER BY hits DESC LIMIT 50) ORDER BY lastChapterDate DESC LIMIT 5") //   //SELECT * from mangas_table ORDER BY lastChapterDate DESC LIMIT 10
+    @Query("SELECT * from mangas_table ORDER BY lastChapterDate DESC LIMIT 20") //   //SELECT * from mangas_table ORDER BY lastChapterDate DESC LIMIT 10 // (SELECT * from mangas_table ORDER BY hits DESC LIMIT 50)
     List<Manga> getMangasWithRecentChapter();
 
     @Query("SELECT id from mangas_table")
@@ -27,6 +27,9 @@ public interface MangaDao {
     @Query("SELECT COUNT(*) FROM mangas_table")
     int getNumberOfRows();
 
-    @Query("UPDATE mangas_table SET author = :author, description = :description, released = :released")
-    void updateChapter(String author, String description, int released);
+    @Query("UPDATE mangas_table SET author = :author, description = :description, released = :released WHERE id = :id")
+    void updateChapter(String author, String description, int released, String id);
+
+    @Query("SELECT * FROM mangas_table WHERE id = :id")
+    LiveData<Manga> getMangaById(String id);
 }

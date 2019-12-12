@@ -14,10 +14,12 @@ import com.example.mangareader.model.remote.RetrofitClass;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -29,8 +31,10 @@ public class ChaptersRepository {
     private MangaDao mangaDao;
     private LiveData<List<Chapter>> allChapters;
     private LiveData<List<Chapter>> recentChapters;
+    public CompositeDisposable recentChaptersCompositeDisposable;
     public ChaptersRepository(Application application) {
         MangaRoomDatabase db = MangaRoomDatabase.getDatabase(application);
+        recentChaptersCompositeDisposable = new CompositeDisposable();
         chapterDao = db.chapterDao();
         mangaDao = db.mangaDao();
         allChapters = chapterDao.getAllChapters();
@@ -50,16 +54,23 @@ public class ChaptersRepository {
         mangasWithRecentChapter.subscribe(new Observer<Manga>() {
             @Override
             public void onSubscribe(Disposable d) {
+                recentChaptersCompositeDisposable.add(d);
             }
             @Override
             public void onNext(Manga myManga) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 getDetailsObservable(myManga).subscribe(new Observer<Manga>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        recentChaptersCompositeDisposable.add(d);
                     }
                     @Override
                     public void onNext(Manga manga) {
-                        Log.i(TAG, "onNext: " + myManga.getTitle());
+                        Log.i(TAG, "onNext: " + myManga.getTitle() + " status -> " + (myManga.getStatus() == 1 ? " en cours " : " fini "));
 
                     }
 
@@ -105,8 +116,8 @@ public class ChaptersRepository {
                         manga.setMangaChaptersFromStringsList(mangaDetails.getChapters());
                         manga.setDescription(mangaDetails.getDescription());
                         manga.setReleased(mangaDetails.getReleased());
-                        mangaDao.updateChapter(mangaDetails.getAuthor(), mangaDetails.getDescription(), mangaDetails.getReleased());
-                        Log.i(TAG, "apply: nbchapter de ce manga -> " + manga.getMangaChapters().size());
+                        mangaDao.updateChapter(mangaDetails.getAuthor(), mangaDetails.getDescription(), mangaDetails.getReleased(), manga.getId());
+                        //Log.i(TAG, "apply: nbchapter de ce manga -> " + manga.getMangaChapters().size());
                         for(Chapter chapter : manga.getMangaChapters()) {
                             chapter.setMangaTitle(manga.getTitle());
                             chapter.setHits(manga.getHits());
@@ -114,7 +125,7 @@ public class ChaptersRepository {
                         }
 
                         //chapterDao.insert(manga.getMangaChapters().get(0));
-                        Log.i(TAG, "apply: nb chapters inserted -> " + chapterDao.getNumberOfChapters() );
+                        //Log.i(TAG, "apply: nb chapters inserted -> " + chapterDao.getNumberOfChapters() );
                         return manga;
                     }
                 })

@@ -7,17 +7,23 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mangareader.R;
+import com.example.mangareader.model.Manga;
 import com.example.mangareader.view.adapter.MangaListAdapter;
 import com.example.mangareader.viewmodel.MangaViewModel;
+
+import java.util.List;
 
 
 /**
@@ -28,7 +34,7 @@ import com.example.mangareader.viewmodel.MangaViewModel;
  * Use the {@link AllMangasFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AllMangasFragment extends Fragment {
+public class AllMangasFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -70,7 +76,7 @@ public class AllMangasFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
+    private static final String TAG = "debugging";
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -79,7 +85,28 @@ public class AllMangasFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mangaViewModel = ViewModelProviders.of(this).get(MangaViewModel.class);
-        mangaViewModel.getAllMangas().observe(this, mangas -> adapter.setMangas(mangas));
+        mangaViewModel.getAllMangas().observe(this, new Observer<List<Manga>>() {
+            @Override
+            public void onChanged(List<Manga> mangas) {
+                adapter.setMangas(mangas);
+                adapter.setOnItemClickListener(new MangaListAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        //Log.i(TAG, "onItemClick: dans on changed postion envoie -> " + position + " author -> " + mangas.get(position).getAuthor());
+                        MangaDetailsFragment mangaDetailsFragment = new MangaDetailsFragment();
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        Bundle arguments = new Bundle();
+                        //arguments.putString("id", mangas.get(position));
+                        arguments.putParcelable("Manga", mangas.get(position));
+                        mangaDetailsFragment.setArguments(arguments);
+                        fragmentTransaction.replace(R.id.fragment_container, mangaDetailsFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -89,19 +116,13 @@ public class AllMangasFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_all, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

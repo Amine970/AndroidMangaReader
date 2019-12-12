@@ -14,7 +14,7 @@ import com.example.mangareader.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MangaDetailsFragment.OnFragmentInteractionListener {
 
 
     @Override
@@ -67,5 +67,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+
     }
 }

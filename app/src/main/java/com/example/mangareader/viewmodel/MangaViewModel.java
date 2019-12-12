@@ -16,12 +16,11 @@ public class MangaViewModel extends AndroidViewModel {
     private LiveData<List<Manga>> allMangas;
     public MangaViewModel(@NonNull Application application) {
         super(application);
-        mangaRepository = new MangaRepository(application);
+        mangaRepository = new MangaRepository(application, null);
         allMangas = mangaRepository.getAllMangas();
     }
 
     public LiveData<List<Manga>> getAllMangas() {
         return allMangas;
     }
-
 }
