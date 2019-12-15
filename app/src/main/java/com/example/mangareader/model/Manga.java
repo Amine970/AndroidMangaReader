@@ -92,10 +92,10 @@ public class Manga implements Comparable<Manga>, Parcelable {
             for(String x : chap)
                 if(x == null)
                     good = false;
-            String chapNum = chap.get(0).replaceAll("[^0-9].*", "");
+            String chapNum = chap.get(0);
             String chapDate =  chap.get(1).replaceAll("[^0-9].*", "");
             if(good)
-                listChapters.add(new Chapter(Integer.parseInt(chapNum),Long.parseLong(chapDate), chap.get(2),chap.get(3), id, 0));
+                listChapters.add(new Chapter(chapNum,Long.parseLong(chapDate), chap.get(2),chap.get(3), id, 0, category));
         }
         this.mangaChapters = listChapters;
     }

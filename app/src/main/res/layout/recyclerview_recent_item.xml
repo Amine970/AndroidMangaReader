@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,37 +10,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/mtrl_card_spacing"
-        android:layout_marginTop="@dimen/mtrl_card_spacing"
         android:layout_marginRight="@dimen/mtrl_card_spacing"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_gravity="center"
         >
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/recent_mangaTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="placeholder"
-                android:layout_marginBottom="20dp"
-                />
+                android:layout_marginTop="10dp"
+                android:text="manga"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:textStyle="bold"/>
+
             <TextView
                 android:id="@+id/recent_mangaNumber"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="placeholder"
-                android:layout_marginBottom="20dp"
-                />
-            <TextView
-                android:id="@+id/recent_mangaDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="placeholder2"
-                />
-        </LinearLayout>
+                android:layout_marginBottom="10dp"
+                android:text="number"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recent_mangaTitle"
+                android:textStyle="bold"
+               />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+
 
 </LinearLayout>

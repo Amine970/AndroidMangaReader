@@ -15,7 +15,7 @@ public interface MangaDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Manga manga);
 
-    @Query("SELECT * from mangas_table ORDER BY hits DESC")
+    @Query("SELECT * from mangas_table ORDER BY hits DESC")     //title ASC     //hits DESC
     LiveData<List<Manga>> getAllMangas();
 
     @Query("SELECT * from mangas_table ORDER BY lastChapterDate DESC LIMIT 20") //   //SELECT * from mangas_table ORDER BY lastChapterDate DESC LIMIT 10 // (SELECT * from mangas_table ORDER BY hits DESC LIMIT 50)

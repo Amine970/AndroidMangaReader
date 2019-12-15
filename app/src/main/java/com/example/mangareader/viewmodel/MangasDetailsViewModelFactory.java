@@ -1,4 +1,4 @@
-package com.example.mangareader.view.ui;
+package com.example.mangareader.viewmodel;
 
 import android.app.Application;
 

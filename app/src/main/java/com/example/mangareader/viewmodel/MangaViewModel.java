@@ -11,6 +11,8 @@ import com.example.mangareader.model.repository.MangaRepository;
 
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public class MangaViewModel extends AndroidViewModel {
     private MangaRepository mangaRepository;
     private LiveData<List<Manga>> allMangas;
@@ -22,5 +24,8 @@ public class MangaViewModel extends AndroidViewModel {
 
     public LiveData<List<Manga>> getAllMangas() {
         return allMangas;
+    }
+    public CompositeDisposable getMangaDisposables() {
+        return mangaRepository.compositeDisposable;
     }
 }

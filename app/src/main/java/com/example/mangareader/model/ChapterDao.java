@@ -1,6 +1,7 @@
 package com.example.mangareader.model;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -16,6 +17,9 @@ public interface ChapterDao {
 
     @Query("SELECT * from chapters_table")
     LiveData<List<Chapter>> getAllChapters();
+
+    @Query("SELECT * from chapters_table WHERE mangaId = :mangaID ")
+    LiveData<List<Chapter>> getChaptersByMangaID(String mangaID);
 
     @Query("SELECT * from chapters_table WHERE date > :time ORDER BY date DESC")   // linux timestamp,  WHERE date > :time
     LiveData<List<Chapter>> getRecentChapters(Long time);    //Long time

@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements MangaDetailsFragm
                 selectedFragment = new AllMangasFragment();
                 break;
             case R.id.nav_recent :
-                selectedFragment = new RecentChaptersFragment();
+                selectedFragment = new ChaptersFragment();
                 break;
             case R.id.nav_favorite :
                 selectedFragment = new FavoriteFragment();

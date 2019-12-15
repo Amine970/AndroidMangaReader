@@ -25,6 +25,8 @@ import com.example.mangareader.viewmodel.MangaViewModel;
 
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +37,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class AllMangasFragment extends Fragment  {
+    private CompositeDisposable disposable;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -85,6 +88,7 @@ public class AllMangasFragment extends Fragment  {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mangaViewModel = ViewModelProviders.of(this).get(MangaViewModel.class);
+        disposable = mangaViewModel.getMangaDisposables();
         mangaViewModel.getAllMangas().observe(this, new Observer<List<Manga>>() {
             @Override
             public void onChanged(List<Manga> mangas) {
@@ -120,6 +124,7 @@ public class AllMangasFragment extends Fragment  {
     @Override
     public void onDetach() {
         super.onDetach();
+        disposable.dispose();
         mListener = null;
     }
 

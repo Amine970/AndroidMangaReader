@@ -14,6 +14,8 @@
             android:id="@+id/mangaDetail_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,6 +42,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginBottom="16dp"
                     android:text="TextView"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +56,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_alignParentBottom="true"
                     android:text="TextView"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/mangaDetail_cardview"
             android:layout_marginTop="30dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
             >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -78,6 +86,8 @@
                     android:text="Description"
                     android:textStyle="bold"
                     android:textSize="20sp"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginEnd="7dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -89,29 +99,36 @@
                     android:layout_marginTop="15dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/mangaDetail_mangaDescription_description"/>
+                    app:layout_constraintTop_toBottomOf="@+id/mangaDetail_mangaDescription_description"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginEnd="7dp"/>
                 <TextView
                     android:id="@+id/mangaDetail_Genres"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Genres"
+
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:layout_marginTop="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/mangaDetail_descriptionText"/>
+                    app:layout_constraintTop_toBottomOf="@+id/mangaDetail_descriptionText"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginEnd="7dp"/>
                 <TextView
                     android:id="@+id/mangaDescription_GenresTexte"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="description text"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginStart="7dp"
                     android:layout_marginEnd="7dp"
+                    android:layout_marginBottom="7dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/mangaDetail_Genres"/>
+                    app:layout_constraintTop_toBottomOf="@+id/mangaDetail_Genres"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -121,6 +138,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/mangaDetail_Description_cardview"
             android:layout_marginTop="30dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
             >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -132,13 +152,24 @@
                     android:text="Chapters"
                     android:textStyle="bold"
                     android:textSize="20sp"
+                    android:layout_marginBottom="30dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="7dp"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/mangaDetail_fragmentChaptersContainer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mangaDetail_chapters"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </com.google.android.material.card.MaterialCardView>
     </RelativeLayout>
-    <!-- TODO: Update blank fragment layout -->
 </androidx.core.widget.NestedScrollView>
 
 

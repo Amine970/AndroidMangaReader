@@ -1,12 +1,13 @@
 package com.example.mangareader.view.ui;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -19,16 +20,10 @@ import android.widget.TextView;
 
 import com.example.mangareader.R;
 import com.example.mangareader.model.Manga;
-import com.example.mangareader.model.MangaDao;
-import com.example.mangareader.model.MangaRoomDatabase;
-import com.example.mangareader.viewmodel.MangaViewModel;
 import com.example.mangareader.viewmodel.MangasDetailsViewModel;
+import com.example.mangareader.viewmodel.MangasDetailsViewModelFactory;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -58,6 +53,8 @@ public class MangaDetailsFragment extends Fragment {
     private TextView title;
     private TextView author;
     private TextView description;
+    private TextView genres;
+
     private MangasDetailsViewModel mangasDetailsViewModel;
     private CompositeDisposable disposable;
 
@@ -70,31 +67,34 @@ public class MangaDetailsFragment extends Fragment {
         title = view.findViewById(R.id.mangaDetail_title);
         author = view.findViewById(R.id.mangaDetail_author);
         description = view.findViewById(R.id.mangaDetail_descriptionText);
+        genres = view.findViewById(R.id.mangaDescription_GenresTexte);
         MangasDetailsViewModelFactory mangasDetailsViewModelFactory = new MangasDetailsViewModelFactory(getActivity().getApplication(), mangaChoosed);
         mangasDetailsViewModel = ViewModelProviders.of(this, mangasDetailsViewModelFactory).get(MangasDetailsViewModel.class);
-        mangasDetailsViewModel.getMangaById().observe(this, new Observer<Manga>() {
-            @Override
-            public void onChanged(Manga manga) {
-                title.setText(manga.getTitle());
-                author.setText(manga.getAuthor());
-                Picasso.get()
-                        .load(manga.getImage())
-                        .placeholder(R.drawable.ic_manga_placeholder)
-                        .fit()
-                        .into(image);
-                description.setText(manga.getDescription());
-            }
-        });
+        //if(mangasDetailsViewModel.getMangaById() != null) {
+            mangasDetailsViewModel.getMangaById().observe(this, new Observer<Manga>() {
+                @Override
+                public void onChanged(Manga manga) {
+                    title.setText(manga.getTitle());
+                    author.setText("Par " + " " + manga.getAuthor());
+                    Picasso.get()
+                            .load(manga.getImage())
+                            .placeholder(R.drawable.ic_manga_placeholder)
+                            .fit()
+                            .into(image);
+                    description.setText(manga.getDescription());
+                    String genresstr = "";
+                    if(manga.getCategory() != null) {
+                        Log.i(TAG, "onChanged: category tab size -> " + manga.getCategory().length);
+                        for(String genre : manga.getCategory())
+                            Log.i(TAG, "onChanged: genre -> " + genre);
+                            //genresstr += genre + " , ";
+                        genres.setText(String.join(" , ", manga.getCategory()));
+                    }
+                            //String.join(" , ", current.getCategory())     //      genres.length() >= 2 ? genres.substring(0, genres.length() - 2) : genres
 
-        /*
-        Observable<List<Manga>> mangaObservable = Observable.fromCallable(new Callable<List<Manga>>() {
-
-            @Override
-            public List<Manga> call() throws Exception {
-                return null;
-            }
-        });
-         */
+                }
+            });
+       // }
     }
 
     private OnFragmentInteractionListener mListener;
@@ -135,7 +135,16 @@ public class MangaDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manga_details, container, false);
+        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_manga_details, container, false);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ChaptersFragment chaptersFragment = new ChaptersFragment();
+        Bundle arguments = new Bundle();
+        arguments.putString("mangaID", mangaChoosed.getId());
+        chaptersFragment.setArguments(arguments);
+        fragmentTransaction.replace(R.id.mangaDetail_fragmentChaptersContainer, chaptersFragment);
+        fragmentTransaction.commit();
+        return layout;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -159,7 +168,6 @@ public class MangaDetailsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.i(TAG, "onDetach: ici");
         mListener = null;
     }
 

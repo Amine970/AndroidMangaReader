@@ -1,6 +1,7 @@
 package com.example.mangareader.model.repository;
 
 import android.app.Application;
+import android.transition.Scene;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -38,7 +39,7 @@ public class MangaRepository {
     private LiveData<List<Manga>> allMangas;
     private LiveData<Manga> mangaById;
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    public CompositeDisposable compositeDisposable = new CompositeDisposable();
     public MangaRepository(Application application, Manga manga) {
         MangaRoomDatabase db = MangaRoomDatabase.getDatabase(application);
         mangaDao = db.mangaDao();
@@ -49,7 +50,6 @@ public class MangaRepository {
         }
         compositeDisposable.add(getMangasObservable()
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .subscribeWith(new DisposableObserver<Manga>() {
                     @Override
                     public void onNext(Manga manga) {
@@ -65,11 +65,25 @@ public class MangaRepository {
                 }));
 
         if(manga != null) {
-            getDetailsObservable(manga)
-                .subscribe(new Consumer<Manga>() {
+            ChaptersRepository.getDetailsObservable(manga, chapterDao, mangaDao)
+                .subscribe(new Observer<Manga>() {
                     @Override
-                    public void accept(Manga manga) throws Exception {
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+                    @Override
+                    public void onNext(Manga manga) {
                         Log.i(TAG, "accept: author -> " + manga.getAuthor());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "onError: " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
         }
@@ -87,54 +101,17 @@ public class MangaRepository {
         return RetrofitClass.getApiService()
                 .getMangas()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .map(AllMangas::getManga)
                 .flatMap((Function<List<Manga>, ObservableSource<Manga>>) mangas -> {
                     //Log.i(TAG, "apply: " + mangas.get(0).getTitle() + " id -> " + mangas.get(0).getTitle());
                     Collections.sort(mangas);
                     List<Manga> reducedList = new ArrayList<>();
-                    for(int i = 0; i < Math.min(300, mangas.size()); i++)
+                    for(int i = 0; i < Math.min(500, mangas.size()); i++)       //int i = 0; i < Math.min(500, mangas.size()); i++
                         reducedList.add(mangas.get(i));
                     return Observable.fromIterable(reducedList.stream().filter(manga -> manga.getId() != null && manga.getImage() != null).collect(Collectors.toList()))
-                            .subscribeOn(Schedulers.io());
+                            .subscribeOn(Schedulers.io()).observeOn(Schedulers.io());
                 })
                 .sorted();
     }
-
-    private Observable<Manga> getDetailsObservable(final Manga manga) {
-        return RetrofitClass.getApiService()
-                .getMangaDetails(manga.getId())
-                .map(new Function<Manga, Manga>() {
-                    @Override
-                    public Manga apply(Manga mangaDetails) throws Exception {
-                        //Log.i(TAG, "applyDetails: ici avec " + mangaDetails.getAuthor());
-                        manga.setAuthor(mangaDetails.getAuthor());
-                        manga.setMangaChaptersFromStringsList(mangaDetails.getChapters());
-                        manga.setDescription(mangaDetails.getDescription());
-                        manga.setReleased(mangaDetails.getReleased());
-                        mangaDao.updateChapter(mangaDetails.getAuthor(), mangaDetails.getDescription(), mangaDetails.getReleased(), manga.getId());
-                        //Log.i(TAG, "apply: nbchapter de ce manga -> " + manga.getMangaChapters().size());
-                        for (Chapter chapter : manga.getMangaChapters()) {
-                            chapter.setMangaTitle(manga.getTitle());
-                            chapter.setHits(manga.getHits());
-                            chapterDao.insert(chapter);
-                        }
-
-                        //chapterDao.insert(manga.getMangaChapters().get(0));
-                        //Log.i(TAG, "apply: nb chapters inserted -> " + chapterDao.getNumberOfChapters());
-                        return manga;
-                    }
-                })
-                .subscribeOn(Schedulers.io());
-    }
-    /*public Manga getMangaByID(String ID) {
-        Observable<List<Manga>> mangaByIdobservable = Observable
-                .fromCallable(() -> mangaDao.getMangaById(ID))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        List<Manga> mangas = new ArrayList<>();
-        mangaByIdobservable.subscribe(mangass -> mangas.add(mangass.get(0)));
-        Log.i(TAG, "getMangaByID:  -> " + mangas.get(0).getTitle());
-        return mangas.get(0);
-    }*/
 }

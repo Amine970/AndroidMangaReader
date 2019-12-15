@@ -14,7 +14,7 @@ public class Chapter {
     @PrimaryKey
     private String id;
     @NonNull
-    private int number;
+    private String number;
     @NonNull
     private long date;
     @NonNull
@@ -22,6 +22,15 @@ public class Chapter {
     @NonNull
     private String mangaId;
     private long hits;
+    private String[] category;
+
+    public String[] getCategory() {
+        return category;
+    }
+
+    public void setCategory(String[] category) {
+        this.category = category;
+    }
 
     @NonNull
     public String getMangaTitle() {
@@ -34,18 +43,19 @@ public class Chapter {
 
     @NonNull
     private String mangaTitle;
-    public Chapter(int number, long date, @NonNull String title, @NonNull String id, @NonNull String mangaId, long hits) {
+    public Chapter(String number, long date, @NonNull String title, @NonNull String id, @NonNull String mangaId, long hits, String[] category) {
         this.number = number;
         this.date = date;
         this.title = title;
         this.id = id;
         this.mangaId = mangaId;
+        this.category = category;
     }
     public Chapter(List<String> chap, @NonNull String mangaId) {
         //int nonDigitsChapDate = chap.get(1).replaceAll("[^0-9]", "").length();
         //int nonDigitsChapNum = chap.get(0).replaceAll("[^0-9]", "").length();
         try {
-            this.number = Integer.parseInt(chap.get(0));
+            this.number =chap.get(0);
             this.date = Long.parseLong(chap.get(1));
             this.title = chap.get(2);
             this.id = chap.get(3);
@@ -54,7 +64,7 @@ public class Chapter {
             Log.i("debugging", "Chapter: " + chap.get(2) + " not inserted ");
         }
     }
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
