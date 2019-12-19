@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,16 +17,20 @@ import com.example.mangareader.model.data.Manga;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MangaViewHolder>{
+public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MangaViewHolder> implements Filterable {
     private final LayoutInflater mInflater;
     private List<Manga> mangas; // Cached copy of mangas
+    private List<Manga> mangasFull;
     private OnItemClickListener myListener;
     private static final String TAG = "debugging";
     public MangaListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
     public void  setMangas(List<Manga> mangas) {
         this.mangas = mangas;
+        mangasFull = new ArrayList<>(this.mangas);
         notifyDataSetChanged();
     }
     @NonNull
@@ -52,6 +58,34 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
         return mangas != null ? mangas.size() : 0;
     }
 
+    @Override
+    public Filter getFilter() {
+        return mangaFilter;
+    }
+    private Filter mangaFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Manga> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0)
+                filteredList.addAll(mangasFull);
+            else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                filteredList.addAll(
+                        mangasFull.stream()
+                                .filter(manga -> manga.getTitle().toLowerCase().contains(filterPattern)).collect(Collectors.toList()));
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mangas.clear();
+            mangas.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public interface OnItemClickListener {
         void onItemClick(int position);
