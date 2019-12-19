@@ -6,34 +6,29 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mangareader.R;
-import com.example.mangareader.model.Chapter;
-import com.example.mangareader.model.ChapterDao;
-import com.example.mangareader.model.MangaDao;
+import com.example.mangareader.model.data.Chapter;
 import com.example.mangareader.view.adapter.ChaptersListAdapter;
 import com.example.mangareader.viewmodel.ChaptersViewModel;
 import com.example.mangareader.viewmodel.ChaptersViewModelFactory;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +58,8 @@ public class ChaptersFragment extends Fragment {
 
     private CompositeDisposable disposable;
     private String mangaID;
-    private Observable<LiveData<List<Chapter>>> chapters;
+    private Observable<LiveData<PagedList<Chapter>>> chapters;
+    private LiveData<List<Chapter>> myChapters;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -103,62 +99,31 @@ public class ChaptersFragment extends Fragment {
         chaptersViewModel = ViewModelProviders.of(this, chaptersViewModelFactory).get(ChaptersViewModel.class);
         disposable = chaptersViewModel.getDisposables();
         if(mangaID != null)
-            chapters = chaptersViewModel.getChaptersByMangaIDObservable();
+            myChapters = chaptersViewModel.getChaptersByMangaID();
         else
-            chapters = chaptersViewModel.getRecentChaptersObservable();
-        Log.i(TAG, "onViewCreated: subscribing !!!!!!!!");
-        chapters
-                //.delay(2000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                //.debounce(10000, TimeUnit.MILLISECONDS)
-                .subscribe(new Observer<LiveData<List<Chapter>>>() {
+            myChapters = chaptersViewModel.getRecentChapters();
+        myChapters.observe(getActivity(), new Observer<List<Chapter>>() {
             @Override
-            public void onSubscribe(Disposable d) {
-                disposable.add(d);
-            }
-
-            @Override
-            public void onNext(LiveData<List<Chapter>> listLiveData) {
-                Log.i(TAG, "onNext: ->");
-                listLiveData.observe(getActivity(), new androidx.lifecycle.Observer<List<Chapter>>() {
+            public void onChanged(List<Chapter> chapters) {
+                Log.i(TAG, "onChanged: avec chapters " + (chapters != null ? chapters.size() : 0));
+                adapter.setChapters(chapters);
+                adapter.setOnItemClickListener(new ChaptersListAdapter.OnItemClickListener() {
                     @Override
-                    public void onChanged(List<Chapter> chapters) {
-                        //Log.i(TAG, "onChanged: chapters fragment -> nbchaps ->  " + (chapters != null ? chapters.size() : 0));
-                        //Log.i(TAG, "onChanged: Am I on Main Thread ? -> " + (Looper.myLooper() == Looper.getMainLooper()));
-                        //if(chapters.size() < 100)
-                        //if(chapters.size() == 691) {
-                            //Log.i(TAG, "onChanged: got all, setting chapters in recyclerview");
-                            adapter.setChapters(chapters);
-                            //Log.i(TAG, "onChanged: ok c'est set");
-                       // }
-                            
-                        //Thread.sleep(500);
+                    public void onItemClick(int position) {
+                        PagesFragment pagesFragment = new PagesFragment();
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        //bundle, arguments ici
+                        Bundle arguments = new Bundle();
+                        arguments.putString("chapterID", chapters.get(position).getId());
+                        pagesFragment.setArguments(arguments);
+                        fragmentTransaction.replace(R.id.fragment_container, pagesFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
                     }
                 });
             }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-                Log.i(TAG, "onComplete: ");
-            }
         });
 
-        //else
-            //chapters = chaptersViewModel.getRecentChapters();
-        /*if(chapters != null) {
-            chapters.observe(this, new Observer<List<Chapter>>() {
-                @Override
-                public void onChanged(List<Chapter> chapters) {
-                    Log.i(TAG, "onChanged: chapters fragment -> nbchaps ->  " + (chapters != null ? chapters.size() : 0));
-                    Log.i(TAG, "onChanged: Am I on Main Thread ? -> " + (Looper.myLooper() == Looper.getMainLooper()));
-                    adapter.setChapters(chapters);
-                }
-            });
-        }*/
     }
 
     @Override

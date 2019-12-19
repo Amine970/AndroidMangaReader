@@ -6,10 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.mangareader.model.Manga;
+import com.example.mangareader.model.data.Manga;
 import com.example.mangareader.model.repository.MangaRepository;
-
-import java.util.List;
 
 public class MangasDetailsViewModel extends AndroidViewModel {
     private MangaRepository mangaRepository;

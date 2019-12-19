@@ -6,21 +6,19 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mangareader.model.data.Manga;
-
-public class MangasDetailsViewModelFactory implements ViewModelProvider.Factory {
+public class PagesViewModelFactory implements ViewModelProvider.Factory {
 
     private Application application;
-    private Manga manga;
+    private String chapterID;
 
-    public MangasDetailsViewModelFactory(Application application, Manga manga) {
+    public PagesViewModelFactory(Application application, String chapterID) {
         this.application = application;
-        this.manga = manga;
+        this.chapterID = chapterID;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new MangasDetailsViewModel(application, manga);
+        return (T) new PagesViewModel(application, chapterID);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.mangareader.model;
+package com.example.mangareader.model.data;
 
 import android.util.Log;
 

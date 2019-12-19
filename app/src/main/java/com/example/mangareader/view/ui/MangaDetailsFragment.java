@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mangareader.R;
-import com.example.mangareader.model.Manga;
+import com.example.mangareader.model.data.Manga;
 import com.example.mangareader.viewmodel.MangasDetailsViewModel;
 import com.example.mangareader.viewmodel.MangasDetailsViewModelFactory;
 import com.squareup.picasso.Picasso;
@@ -71,38 +71,31 @@ public class MangaDetailsFragment extends Fragment {
         MangasDetailsViewModelFactory mangasDetailsViewModelFactory = new MangasDetailsViewModelFactory(getActivity().getApplication(), mangaChoosed);
         mangasDetailsViewModel = ViewModelProviders.of(this, mangasDetailsViewModelFactory).get(MangasDetailsViewModel.class);
         //if(mangasDetailsViewModel.getMangaById() != null) {
+
             mangasDetailsViewModel.getMangaById().observe(this, new Observer<Manga>() {
                 @Override
                 public void onChanged(Manga manga) {
+
                     title.setText(manga.getTitle());
-                    author.setText("Par " + " " + manga.getAuthor());
+                    author.setText("Par " + " " + (manga.getAuthor() != null ? manga.getAuthor() : "..."));
                     Picasso.get()
                             .load(manga.getImage())
                             .placeholder(R.drawable.ic_manga_placeholder)
                             .fit()
                             .into(image);
                     description.setText(manga.getDescription());
-                    String genresstr = "";
                     if(manga.getCategory() != null) {
-                        Log.i(TAG, "onChanged: category tab size -> " + manga.getCategory().length);
-                        for(String genre : manga.getCategory())
-                            Log.i(TAG, "onChanged: genre -> " + genre);
-                            //genresstr += genre + " , ";
                         genres.setText(String.join(" , ", manga.getCategory()));
                     }
-                            //String.join(" , ", current.getCategory())     //      genres.length() >= 2 ? genres.substring(0, genres.length() - 2) : genres
-
                 }
             });
        // }
     }
-
     private OnFragmentInteractionListener mListener;
 
     public MangaDetailsFragment() {
         // Required empty public constructor
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.

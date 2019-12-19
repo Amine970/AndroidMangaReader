@@ -1,7 +1,6 @@
 package com.example.mangareader.view.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mangareader.R;
-import com.example.mangareader.model.Manga;
+import com.example.mangareader.model.data.Manga;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
@@ -75,7 +74,6 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
                     if(myListener != null) {
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            //Log.i(TAG, "onClick: dans adapter position envoie -> " + position + " author -> " + mangas.get(position).getAuthor());
                             myListener.onItemClick(position);
                         }
                     }

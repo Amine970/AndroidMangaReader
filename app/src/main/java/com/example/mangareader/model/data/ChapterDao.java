@@ -1,7 +1,8 @@
-package com.example.mangareader.model;
+package com.example.mangareader.model.data;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.paging.DataSource;
+import androidx.paging.PagedList;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;

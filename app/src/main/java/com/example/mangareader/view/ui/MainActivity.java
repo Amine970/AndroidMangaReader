@@ -1,6 +1,7 @@
 package com.example.mangareader.view.ui;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +15,7 @@ import com.example.mangareader.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements MangaDetailsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MangaDetailsFragment.OnFragmentInteractionListener, PagesFragment.OnFragmentInteractionListener {
 
 
     @Override
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements MangaDetailsFragm
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
@@ -71,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements MangaDetailsFragm
 
     @Override
     public void onFragmentInteraction(String id) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

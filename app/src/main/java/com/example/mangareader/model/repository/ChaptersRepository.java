@@ -1,30 +1,22 @@
 package com.example.mangareader.model.repository;
 
 import android.app.Application;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import com.example.mangareader.model.Chapter;
-import com.example.mangareader.model.ChapterDao;
-import com.example.mangareader.model.Manga;
-import com.example.mangareader.model.MangaDao;
-import com.example.mangareader.model.MangaDetails;
-import com.example.mangareader.model.MangaRoomDatabase;
+import com.example.mangareader.model.data.Chapter;
+import com.example.mangareader.model.data.ChapterDao;
+import com.example.mangareader.model.data.Manga;
+import com.example.mangareader.model.data.MangaDao;
+import com.example.mangareader.model.data.MangaRoomDatabase;
 import com.example.mangareader.model.remote.RetrofitClass;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
@@ -48,7 +40,9 @@ public class ChaptersRepository {
         recentChaptersCompositeDisposable = new CompositeDisposable();
         chapterDao = db.chapterDao();
         mangaDao = db.mangaDao();
-        //recentChapters = chapterDao.getRecentChapters()
+        chaptersByMangaID = chapterDao.getChaptersByMangaID(mangaID);
+        long tsLong = System.currentTimeMillis()/1000;
+        recentChapters = chapterDao.getRecentChapters(tsLong - 2*604800);
         if(mangaID == null) {
             getMangasWithRecentChapter()
                     .observeOn(Schedulers.io())
@@ -58,7 +52,6 @@ public class ChaptersRepository {
                             Log.i(TAG, "ChaptersRepository: dans onsubscribe");
                             recentChaptersCompositeDisposable.add(d);
                         }
-
                         @Override
                         public void onNext(Manga manga) {
                             Log.i(TAG, "onNext: inserting chapter for recents");
@@ -83,6 +76,10 @@ public class ChaptersRepository {
         return recentChapters;
     }
 
+    public LiveData<List<Chapter>> getChaptersByMangaID() {
+        return chaptersByMangaID;
+    }
+
     public Observable<Manga> getMangasWithRecentChapter() {
         return Observable
                 .fromCallable(() -> mangaDao.getMangasWithRecentChapter())
@@ -95,46 +92,6 @@ public class ChaptersRepository {
                         return Observable.fromIterable(mangas).subscribeOn(Schedulers.io());
                     }
                 });
-        /*
-        .flatMap(new Function<Manga, ObservableSource<Manga>>() {
-                    @Override
-                    public ObservableSource<Manga> apply(Manga manga) throws Exception {
-                        return getDetailsObservable(manga, chapterDao, mangaDao);
-                    }
-                })
-         */
-    }
-
-    public Observable<LiveData<List<Chapter>>> getChaptersByMangaIDObservable () {
-        return Observable
-                .fromCallable(new Callable<LiveData<List<Chapter>>>() {
-                    @Override
-                    public LiveData<List<Chapter>> call() throws Exception {
-                        Log.i(TAG, "call: dans call !!!!!");
-                        return chapterDao.getChaptersByMangaID(mangaID);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-    public Observable<LiveData<List<Chapter>>> getRecentChaptersObservable() {
-        Observable<Observable<Manga>> recentChaptersObservable = getMangasWithRecentChapter()
-                .map(new Function<Manga, Observable<Manga>>() {
-                    @Override
-                    public Observable<Manga> apply(Manga manga) throws Exception {
-                        return getDetailsObservable(manga, chapterDao, mangaDao);
-                    }
-                });
-        return Observable
-                .fromCallable(new Callable<LiveData<List<Chapter>>>() {
-                    @Override
-                    public LiveData<List<Chapter>> call() throws Exception {
-                        Long tsLong = System.currentTimeMillis()/1000;
-                        return chapterDao.getRecentChapters(tsLong - 2*604800);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
     }
     public static Observable<Manga> getDetailsObservable(final Manga manga, ChapterDao chapterDao, MangaDao mangaDao) {
         return RetrofitClass.getApiService()
@@ -149,19 +106,7 @@ public class ChaptersRepository {
                         manga.setDescription(mangaDetails.getDescription());
                         manga.setReleased(mangaDetails.getReleased());
                         mangaDao.updateChapter(mangaDetails.getAuthor(), mangaDetails.getDescription(), mangaDetails.getReleased(), manga.getId());
-                        //Log.i(TAG, "apply: nbchapter de ce manga -> " + manga.getMangaChapters().size());
-                        //Log.i(TAG, "apply: manga -> " + manga.getTitle());
-                        //chaptersListTmp = new ArrayList<>();
-                        /*for(int i = manga.getMangaChapters().size() - 1; i >= Math.max(0, manga.getMangaChapters().size() - 100); i--) {
-                            Chapter chapter = manga.getMangaChapters().get(i);
-                            if(!chapter.getNumber().contains(".")) {    // && i < 500
-                                chapter.setMangaTitle(manga.getTitle());
-                                chapter.setHits(manga.getHits());
-                                //chaptersListTmp.add(chapter);//////////////////////////////////////////////
-                                chapterDao.insert(chapter);
-                            }
-                        }*/
-                        for(int i = 0; i < Math.min(manga.getMangaChapters().size(), 100); i++) {
+                        for(int i = 0; i < Math.min(manga.getMangaChapters().size(), 75); i++) {
                             Chapter chapter = manga.getMangaChapters().get(i);
                             if(!chapter.getNumber().contains(".")) {    // && i < 500
                                 chapter.setMangaTitle(manga.getTitle());
@@ -171,7 +116,6 @@ public class ChaptersRepository {
                                 chapterDao.insert(chapter);
                             }
                         }
-                        //Log.i(TAG, "apply: nb chapters inserted -> " + chapterDao.getNumberOfChapters() );
                         return manga;
                     }
                 })

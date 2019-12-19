@@ -1,33 +1,28 @@
 package com.example.mangareader.model.repository;
 
 import android.app.Application;
-import android.transition.Scene;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.mangareader.model.Chapter;
-import com.example.mangareader.model.ChapterDao;
-import com.example.mangareader.model.Manga;
-import com.example.mangareader.model.MangaDao;
-import com.example.mangareader.model.MangaRoomDatabase;
-import com.example.mangareader.model.AllMangas;
+import com.example.mangareader.model.data.ChapterDao;
+import com.example.mangareader.model.data.Manga;
+import com.example.mangareader.model.data.MangaDao;
+import com.example.mangareader.model.data.MangaRoomDatabase;
+import com.example.mangareader.model.data.AllMangas;
 import com.example.mangareader.model.remote.RetrofitClass;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
