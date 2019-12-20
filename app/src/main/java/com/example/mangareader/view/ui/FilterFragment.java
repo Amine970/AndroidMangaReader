@@ -81,7 +81,7 @@ public class FilterFragment extends Fragment {
                 arguments.putString("categoryFilter", categoriesArray[position]);
                 allMangasFragment.setArguments(arguments);
                 fragmentTransaction.replace(R.id.fragment_container, allMangasFragment);
-                fragmentTransaction.addToBackStack(null);
+                //fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
         });
