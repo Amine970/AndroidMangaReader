@@ -99,6 +99,7 @@ public class ChaptersRepository {
                 .map(new Function<Manga, Manga>() {
                     @Override
                     public Manga apply(Manga mangaDetails) throws Exception {
+                        Thread.sleep(1500);
                         //Log.i(TAG, "map apply: Am I on Main Thread ? -> " + (Looper.myLooper() == Looper.getMainLooper()));
                         Log.i(TAG, "applyDetails: ici avec " + mangaDetails.getAuthor());
                         manga.setAuthor(mangaDetails.getAuthor());
@@ -116,6 +117,7 @@ public class ChaptersRepository {
                                 chapterDao.insert(chapter);
                             }
                         }
+
                         return manga;
                     }
                 })

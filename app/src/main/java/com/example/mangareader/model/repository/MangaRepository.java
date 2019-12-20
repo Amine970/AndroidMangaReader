@@ -103,7 +103,7 @@ public class MangaRepository {
                     //Log.i(TAG, "apply: " + mangas.get(0).getTitle() + " id -> " + mangas.get(0).getTitle());
                     Collections.sort(mangas);
                     List<Manga> reducedList = new ArrayList<>();
-                    for(int i = 0; i < Math.min(500, mangas.size()); i++)       //int i = 0; i < Math.min(500, mangas.size()); i++
+                    for(int i = 0; i < Math.min(1000, mangas.size()); i++)       //int i = 0; i < Math.min(500, mangas.size()); i++
                         reducedList.add(mangas.get(i));
                     return Observable.fromIterable(reducedList.stream().filter(manga -> manga.getId() != null && manga.getImage() != null).collect(Collectors.toList()))
                             .subscribeOn(Schedulers.io()).observeOn(Schedulers.io());

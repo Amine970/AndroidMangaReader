@@ -1,4 +1,4 @@
-package com.example.mangareader.viewmodel;
+package com.example.mangareader.viewmodel.factories;
 
 import android.app.Application;
 
@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mangareader.model.data.Manga;
+import com.example.mangareader.viewmodel.MangasDetailsViewModel;
 
 public class MangasDetailsViewModelFactory implements ViewModelProvider.Factory {
 

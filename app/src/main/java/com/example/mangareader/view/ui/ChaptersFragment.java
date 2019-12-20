@@ -18,12 +18,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.mangareader.R;
 import com.example.mangareader.model.data.Chapter;
 import com.example.mangareader.view.adapter.ChaptersListAdapter;
 import com.example.mangareader.viewmodel.ChaptersViewModel;
-import com.example.mangareader.viewmodel.ChaptersViewModelFactory;
+import com.example.mangareader.viewmodel.factories.ChaptersViewModelFactory;
 
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class ChaptersFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-
+        ProgressBar progressBar = view.findViewById(R.id.progressBar1);
         ChaptersViewModelFactory chaptersViewModelFactory = new ChaptersViewModelFactory(getActivity().getApplication(), mangaID);
         chaptersViewModel = ViewModelProviders.of(this, chaptersViewModelFactory).get(ChaptersViewModel.class);
         disposable = chaptersViewModel.getDisposables();
@@ -106,6 +107,8 @@ public class ChaptersFragment extends Fragment {
             @Override
             public void onChanged(List<Chapter> chapters) {
                 Log.i(TAG, "onChanged: avec chapters " + (chapters != null ? chapters.size() : 0));
+                if(chapters != null && chapters.size() >= 5 )
+                    progressBar.setVisibility(View.GONE);
                 adapter.setChapters(chapters);
                 adapter.setOnItemClickListener(new ChaptersListAdapter.OnItemClickListener() {
                     @Override
@@ -130,7 +133,7 @@ public class ChaptersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recent_chapters, container, false);
+        return inflater.inflate(R.layout.fragment_chapters, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

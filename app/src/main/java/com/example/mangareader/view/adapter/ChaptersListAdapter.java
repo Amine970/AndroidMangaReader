@@ -28,7 +28,7 @@ public class ChaptersListAdapter extends RecyclerView.Adapter<ChaptersListAdapte
     @NonNull
     @Override
     public ChaptersListAdapter.ChapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.recyclerview_recent_item, parent, false);
+        View itemView = mInflater.inflate(R.layout.recyclerview_chapter_item, parent, false);
         return new ChapterViewHolder(itemView);
     }
 

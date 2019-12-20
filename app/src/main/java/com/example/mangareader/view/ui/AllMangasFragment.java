@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import com.example.mangareader.R;
@@ -116,7 +117,7 @@ public class AllMangasFragment extends Fragment  {
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         adapter = new MangaListAdapter(getActivity());
-
+        ProgressBar progressBar = view.findViewById(R.id.progressBar2);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mangaViewModel = ViewModelProviders.of(this).get(MangaViewModel.class);
@@ -125,6 +126,8 @@ public class AllMangasFragment extends Fragment  {
             @Override
             public void onChanged(List<Manga> mangas) {
                 adapter.setMangas(mangas);
+                if(mangas != null && mangas.size() >= 4 )
+                    progressBar.setVisibility(View.GONE);
                 if(categoryFilter != null)
                     adapter.getFilterByCategories().filter(categoryFilter);
                 adapter.setOnItemClickListener(new MangaListAdapter.OnItemClickListener() {
@@ -138,7 +141,7 @@ public class AllMangasFragment extends Fragment  {
                         arguments.putParcelable("Manga", mangas.get(position));
                         mangaDetailsFragment.setArguments(arguments);
                         fragmentTransaction.replace(R.id.fragment_container, mangaDetailsFragment);
-                        fragmentTransaction.addToBackStack(null);
+                        //fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
 
                     }

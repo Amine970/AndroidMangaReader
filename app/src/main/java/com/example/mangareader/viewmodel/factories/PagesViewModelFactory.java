@@ -1,10 +1,12 @@
-package com.example.mangareader.viewmodel;
+package com.example.mangareader.viewmodel.factories;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.mangareader.viewmodel.PagesViewModel;
 
 public class PagesViewModelFactory implements ViewModelProvider.Factory {
 

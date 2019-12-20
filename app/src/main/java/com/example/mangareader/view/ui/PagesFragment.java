@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -21,12 +20,9 @@ import android.view.ViewGroup;
 import com.example.mangareader.R;
 import com.example.mangareader.model.data.Page;
 import com.example.mangareader.view.adapter.ViewPagerAdapter;
-import com.example.mangareader.viewmodel.ChaptersViewModel;
-import com.example.mangareader.viewmodel.ChaptersViewModelFactory;
 import com.example.mangareader.viewmodel.PagesViewModel;
-import com.example.mangareader.viewmodel.PagesViewModelFactory;
+import com.example.mangareader.viewmodel.factories.PagesViewModelFactory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,9 +89,9 @@ public class PagesFragment extends Fragment {
         PagesViewModel pagesViewModel = ViewModelProviders
                         .of(this, pagesViewModelFactory)
                         .get(PagesViewModel.class);
-        pagesURLS = pagesViewModel.getPages();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getContext());
-
+        viewPager.setAdapter(adapter);
+        pagesURLS = pagesViewModel.getPages();
         pagesURLS.observe(getActivity(), new Observer<List<Page>>() {
             @Override
             public void onChanged(List<Page> pages) {
@@ -109,7 +105,7 @@ public class PagesFragment extends Fragment {
 //                }
             }
         });
-        viewPager.setAdapter(adapter);
+
 
     }
 

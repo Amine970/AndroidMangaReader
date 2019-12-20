@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import android.widget.TextView;
 import com.example.mangareader.R;
 import com.example.mangareader.model.data.Manga;
 import com.example.mangareader.viewmodel.MangasDetailsViewModel;
-import com.example.mangareader.viewmodel.MangasDetailsViewModelFactory;
+import com.example.mangareader.viewmodel.factories.MangasDetailsViewModelFactory;
 import com.squareup.picasso.Picasso;
 
 import io.reactivex.disposables.CompositeDisposable;
