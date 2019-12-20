@@ -5,5 +5,4 @@
     android:layout_height="match_parent"
     tools:context=".view.ui.PagesFragment"
     android:id="@+id/manga_pages_viewpager">
-
 </androidx.viewpager.widget.ViewPager>

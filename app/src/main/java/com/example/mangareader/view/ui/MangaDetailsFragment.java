@@ -65,9 +65,16 @@ public class MangaDetailsFragment extends Fragment {
         //Log.i(TAG, "onViewCreated: title manga choosed -> " + mangaChoosed.getTitle() + " author  -> " + mangaChoosed.getAuthor() );
         image = view.findViewById(R.id.mangaDetail_image);
         title = view.findViewById(R.id.mangaDetail_title);
+        title.setText(mangaChoosed.getTitle());
+        Picasso.get()
+                .load(mangaChoosed.getImage())
+                .placeholder(R.drawable.ic_manga_placeholder)
+                .fit()
+                .into(image);
         author = view.findViewById(R.id.mangaDetail_author);
         description = view.findViewById(R.id.mangaDetail_descriptionText);
         genres = view.findViewById(R.id.mangaDescription_GenresTexte);
+        genres.setText("...");
         MangasDetailsViewModelFactory mangasDetailsViewModelFactory = new MangasDetailsViewModelFactory(getActivity().getApplication(), mangaChoosed);
         mangasDetailsViewModel = ViewModelProviders.of(this, mangasDetailsViewModelFactory).get(MangasDetailsViewModel.class);
         //if(mangasDetailsViewModel.getMangaById() != null) {
@@ -77,11 +84,6 @@ public class MangaDetailsFragment extends Fragment {
                 public void onChanged(Manga manga) {
                     title.setText(manga.getTitle());
                     author.setText("Par " + " " + (manga.getAuthor() != null ? manga.getAuthor() : "..."));
-                    Picasso.get()
-                            .load(manga.getImage())
-                            .placeholder(R.drawable.ic_manga_placeholder)
-                            .fit()
-                            .into(image);
                     description.setText(manga.getDescription());
                     if(manga.getCategory() != null) {
                         genres.setText(String.join(" , ", manga.getCategory()));
