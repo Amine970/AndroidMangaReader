@@ -78,7 +78,7 @@ public class AllMangasFragment extends Fragment  {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
-        Log.i(TAG, "onCreateOptionsMenu: dans fragment allmangas");
+        //Log.i(TAG, "onCreateOptionsMenu: dans fragment allmangas");
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
@@ -91,20 +91,21 @@ public class AllMangasFragment extends Fragment  {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //adapter.getFilter().filter(newText);
-                adapter.getFilterByCategories().filter(newText);
+                if(adapter != null)
+                    adapter.getFilter().filter(newText);
                 return false;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
     }
-
+    private String categoryFilter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            categoryFilter = getArguments().getString("categoryFilter");
         }
     }
     private static final String TAG = "debugging";
@@ -112,8 +113,10 @@ public class AllMangasFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         adapter = new MangaListAdapter(getActivity());
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mangaViewModel = ViewModelProviders.of(this).get(MangaViewModel.class);
@@ -122,6 +125,8 @@ public class AllMangasFragment extends Fragment  {
             @Override
             public void onChanged(List<Manga> mangas) {
                 adapter.setMangas(mangas);
+                if(categoryFilter != null)
+                    adapter.getFilterByCategories().filter(categoryFilter);
                 adapter.setOnItemClickListener(new MangaListAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(int position) {

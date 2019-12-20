@@ -49,12 +49,12 @@ public class ChaptersRepository {
                     .subscribe(new Observer<Manga>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-                            Log.i(TAG, "ChaptersRepository: dans onsubscribe");
+                            //Log.i(TAG, "ChaptersRepository: dans onsubscribe");
                             recentChaptersCompositeDisposable.add(d);
                         }
                         @Override
                         public void onNext(Manga manga) {
-                            Log.i(TAG, "onNext: inserting chapter for recents");
+                            //Log.i(TAG, "onNext: inserting chapter for recents");
                             getDetailsObservable(manga, chapterDao, mangaDao)
                                     .subscribe((x) -> {}, error -> {});
                         }
@@ -88,7 +88,7 @@ public class ChaptersRepository {
                 .flatMap(new Function<List<Manga>, ObservableSource<Manga>>() {
                     @Override
                     public ObservableSource<Manga> apply(List<Manga> mangas) throws Exception {
-                        Log.i(TAG, "apply: apply flatmap liste mangas à");
+                        //Log.i(TAG, "apply: apply flatmap liste mangas à");
                         return Observable.fromIterable(mangas).subscribeOn(Schedulers.io());
                     }
                 });

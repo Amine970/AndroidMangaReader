@@ -3,13 +3,23 @@ package com.example.mangareader.view.ui;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.mangareader.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,6 +62,31 @@ public class FilterFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private String categoriesString = "Action,,Adult,,Adventure,,Comedy,,Doujinshi,,Drama,,Ecchi,,Fantasy,,Gender Bender,,Harem,,Historical,,Horror,,Josei,,Martial Arts,,Mature,,Mecha,,Mystery,,Psychological,,Romance,,School Life,,Sci-fi,,Seinen,,Shoujo,,Shounen,,Slice of Life,,Smut,,Sports,,Supernatural,,Tragedy,,Yaoi,,Yuri";
+    private ListView listView;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listView = view.findViewById(R.id.filter_listview);
+        String[] categoriesArray = categoriesString.split(",,");
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, categoriesArray);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AllMangasFragment allMangasFragment = new AllMangasFragment();
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                Bundle arguments = new Bundle();
+                arguments.putString("categoryFilter", categoriesArray[position]);
+                allMangasFragment.setArguments(arguments);
+                fragmentTransaction.replace(R.id.fragment_container, allMangasFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

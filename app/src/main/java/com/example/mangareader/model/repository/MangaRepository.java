@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import io.reactivex.Observable;
@@ -33,7 +35,6 @@ public class MangaRepository {
     private ChapterDao chapterDao;
     private LiveData<List<Manga>> allMangas;
     private LiveData<Manga> mangaById;
-
     public CompositeDisposable compositeDisposable = new CompositeDisposable();
     public MangaRepository(Application application, Manga manga) {
         MangaRoomDatabase db = MangaRoomDatabase.getDatabase(application);
@@ -68,7 +69,7 @@ public class MangaRepository {
                     }
                     @Override
                     public void onNext(Manga manga) {
-                        Log.i(TAG, "accept: author -> " + manga.getAuthor());
+                        //Log.i(TAG, "accept: author -> " + manga.getAuthor());
                     }
 
                     @Override

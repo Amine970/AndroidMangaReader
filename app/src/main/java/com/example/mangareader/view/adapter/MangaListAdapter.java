@@ -1,6 +1,7 @@
 package com.example.mangareader.view.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,8 @@ import java.util.stream.Collectors;
 
 public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MangaViewHolder> implements Filterable {
     private final LayoutInflater mInflater;
-    private List<Manga> mangas; // Cached copy of mangas
-    private List<Manga> mangasFull;
+    private List<Manga> mangas;// = new ArrayList<>(); // Cached copy of mangas
+    private List<Manga> mangasFull;// = new ArrayList<>();
     private OnItemClickListener myListener;
     private static final String TAG = "debugging";
     public MangaListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
@@ -70,6 +71,7 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     private Filter filterByCategories = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
+            //Log.i(TAG, "performFiltering: with category -> " + constraint.toString());
             List<Manga> filteredList = new ArrayList<>();
             if(constraint == null || constraint.length() == 0)
                 filteredList.addAll(mangasFull);

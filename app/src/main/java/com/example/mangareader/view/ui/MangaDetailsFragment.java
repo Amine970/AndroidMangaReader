@@ -75,7 +75,6 @@ public class MangaDetailsFragment extends Fragment {
             mangasDetailsViewModel.getMangaById().observe(this, new Observer<Manga>() {
                 @Override
                 public void onChanged(Manga manga) {
-
                     title.setText(manga.getTitle());
                     author.setText("Par " + " " + (manga.getAuthor() != null ? manga.getAuthor() : "..."));
                     Picasso.get()

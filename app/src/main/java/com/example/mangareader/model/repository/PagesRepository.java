@@ -5,11 +5,8 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.mangareader.model.data.Chapter;
 import com.example.mangareader.model.data.ChapterDao;
 import com.example.mangareader.model.data.ChapterDetails;
-import com.example.mangareader.model.data.Manga;
-import com.example.mangareader.model.data.MangaDao;
 import com.example.mangareader.model.data.MangaRoomDatabase;
 import com.example.mangareader.model.data.Page;
 import com.example.mangareader.model.data.PageDao;
@@ -27,14 +24,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PagesRepository {
     private static final String TAG = "debugging";
-    private ChapterDao chapterDao;
     private PageDao pageDao;
-    private String chapterID;
     private LiveData<List<Page>> pages;
     public PagesRepository(Application application, String chapterID) {
         MangaRoomDatabase db = MangaRoomDatabase.getDatabase(application);
-        this.chapterID = chapterID;
-        chapterDao = db.chapterDao();
+        ChapterDao chapterDao = db.chapterDao();
         pageDao = db.pageDao();
         pages = pageDao.getPagesByChapterID(chapterID);
         getChapterDetails(chapterID)
