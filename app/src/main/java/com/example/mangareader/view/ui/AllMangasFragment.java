@@ -91,7 +91,8 @@ public class AllMangasFragment extends Fragment  {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
+                //adapter.getFilter().filter(newText);
+                adapter.getFilterByCategories().filter(newText);
                 return false;
             }
         });

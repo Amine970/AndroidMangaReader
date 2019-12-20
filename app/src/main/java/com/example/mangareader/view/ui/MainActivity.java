@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements MangaDetailsFragm
             case R.id.nav_recent :
                 selectedFragment = new ChaptersFragment();
                 break;
-            case R.id.nav_favorite :
-                selectedFragment = new FavoriteFragment();
+            case R.id.nav_filter :
+                selectedFragment = new FilterFragment();
                 break;
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,

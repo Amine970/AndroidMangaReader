@@ -62,6 +62,37 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
     public Filter getFilter() {
         return mangaFilter;
     }
+
+    public Filter getFilterByCategories() {
+        return filterByCategories;
+    }
+
+    private Filter filterByCategories = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Manga> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0)
+                filteredList.addAll(mangasFull);
+            else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                filteredList.addAll(
+                        mangasFull.stream()
+                                .filter(manga -> String.join("", manga.getCategory()).toLowerCase().contains(filterPattern))
+                                .collect(Collectors.toList()));
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mangas.clear();
+            mangas.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
     private Filter mangaFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -72,13 +103,13 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.Mang
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 filteredList.addAll(
                         mangasFull.stream()
-                                .filter(manga -> manga.getTitle().toLowerCase().contains(filterPattern)).collect(Collectors.toList()));
+                                .filter(manga -> manga.getTitle().toLowerCase().contains(filterPattern))
+                                .collect(Collectors.toList()));
             }
             FilterResults results = new FilterResults();
             results.values = filteredList;
             return results;
         }
-
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mangas.clear();
