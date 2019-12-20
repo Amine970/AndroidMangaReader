@@ -141,7 +141,7 @@ public class AllMangasFragment extends Fragment  {
                         arguments.putParcelable("Manga", mangas.get(position));
                         mangaDetailsFragment.setArguments(arguments);
                         fragmentTransaction.replace(R.id.fragment_container, mangaDetailsFragment);
-                        //fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
 
                     }
